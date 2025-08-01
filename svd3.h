@@ -2,10 +2,10 @@
 **
 **  svd3
 **
-** Quick singular value decomposition as described by:
-** A. McAdams, A. Selle, R. Tamstorf, J. Teran and E. Sifakis,
-** "Computing the Singular Value Decomposition of 3x3 matrices
-** with minimal branching and elementary doubleing point operations",
+**  Quick singular value decomposition as described by:
+**  A. McAdams, A. Selle, R. Tamstorf, J. Teran and E. Sifakis,
+**  "Computing the Singular Value Decomposition of 3x3 matrices
+**  with minimal branching and elementary floating point operations",
 **  University of Wisconsin - Madison technical report TR1690, May 2011
 **
 **  OPTIMIZED CPU VERSION
@@ -20,16 +20,12 @@
 
 #pragma once
 
-#include <array>
 #define _gamma 5.828427124  // FOUR_GAMMA_SQUARED = sqrt(8)+3;
 #define _cstar 0.923879532  // cos(pi/8)
 #define _sstar 0.3826834323 // sin(p/8)
 #define EPSILON 1e-6
 
 #include <math.h>
-
-// using Matrix33 = std::array<std::array<double, 3>, 3>;
-using RawM33 = double[3][3];
 
 /* Inverse square root.
 

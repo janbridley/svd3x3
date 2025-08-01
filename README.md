@@ -1,14 +1,15 @@
 # Fast 3x3 SVD
 
-This is an implementation of the method described in (Computing the Singular Value Decomposition of 3x3 matrices with minimal branching and elementary floating point operations)[http://pages.cs.wisc.edu/~sifakis/papers/SVD_TR1690.pdf], based on an implementation by Eric Jang. I've updated the syntax of the library to reflect a more modern c(++) style, and included Python bindings an unit tests.
-
+This is an implementation of the method described in
+[Computing the Singular Value Decomposition of 3x3 matrices with minimal branching and elementary floating point operations](http://pages.cs.wisc.edu/~sifakis/papers/SVD_TR1690.pdf),
+based on an implementation by Eric Jang. I've updated the syntax of the library to
+reflect a more modern c(++) style, and included Python bindings an unit tests.
 
 ## Usage
 
-Just include the header file and you are good to go! 
+Just include the header file and you are good to go!
 
 ```C++
-
 #include "svd3.h"
 float a11, a12, a13, a21, a22, a23, a31, a32, a33;
 
@@ -37,4 +38,5 @@ svd(a11, a12, a13, a21, a22, a23, a31, a32, a33,
 See the included Mathematica notebook for derivations of numerical shortcuts.
 
 ## License
+
 MIT License, Eric V. Jang 2014, Jenna Bradley 2025

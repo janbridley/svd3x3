@@ -1,0 +1,35 @@
+# Editor and OS files
+*~
+*.swp
+.DS_Store
+
+# Packaging and distribution
+*.egg
+*.egg-info*
+*.whl
+*.o
+*.so*
+dist
+build
+doc/build
+eggs
+parts
+bin
+var
+sdist
+develop-eggs
+.installed.cfg
+lib
+lib64
+
+# Compiled files
+__pycache__/
+*.pyc
+
+.coverage*
+.hypothesis/
+.pytest_cache/
+
+.ipynb_checkpoints/
+
+svd3x3/_*.c

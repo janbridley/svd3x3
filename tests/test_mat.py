@@ -1,12 +1,16 @@
 import pytest
-from hypothesis import given, settings, HealthCheck
+from hypothesis import given, settings, HealthCheck, strategies as st
 from conftest import generate_random_matrixes, nonsingular_3x3_matrices
 import numpy as np
-from svd3x3._c import mul_a_b, mul_at_b, svd
+from svd3x3._c import mul_a_b, mul_at_b, svd, rsqrt
 
 # TODO: generate meaningful test matrixes
 N = 20
 
+
+@given(st.floats())
+def test_rsqrt(x):
+    np.testing.assert_allclose(rsqrt(x), 1/ np.sqrt(x))
 
 @pytest.mark.parametrize("a", generate_random_matrixes(N))
 @pytest.mark.parametrize("b", generate_random_matrixes(N))

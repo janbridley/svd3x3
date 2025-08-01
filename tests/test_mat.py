@@ -10,7 +10,8 @@ N = 20
 
 @given(st.floats())
 def test_rsqrt(x):
-    np.testing.assert_allclose(rsqrt(x), 1/ np.sqrt(x))
+    np.testing.assert_allclose(rsqrt(x), 1 / np.sqrt(x))
+
 
 @pytest.mark.parametrize("a", generate_random_matrixes(N))
 @pytest.mark.parametrize("b", generate_random_matrixes(N))
@@ -22,6 +23,7 @@ def test_matmul(a, b):
 @pytest.mark.parametrize("b", generate_random_matrixes(N))
 def test_matmul_transposed(a, b):
     np.testing.assert_allclose(mul_at_b(a[:], b[:]), a.T @ b)
+
 
 @pytest.mark.parametrize("a", generate_random_matrixes(N**2))
 def test_svd(a):

@@ -15,7 +15,8 @@ NB_MODULE(_c, m) {
   m.def("rsqrt", &rsqrt);
   m.def("mul_a_b", [](const Matrix33 a, const Matrix33 b) {
     double m[3][3];
-    matmul(a.data(), b.data(), m);
+    matmul(reinterpret_cast<double(*)[3]>(a.data()),
+           reinterpret_cast<double(*)[3]>(b.data()), m);
     return Matrix33(m).cast();
   });
   m.def("mul_at_b", [](const Matrix33 a, const Matrix33 b) {

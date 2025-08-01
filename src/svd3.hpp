@@ -76,10 +76,10 @@ inline void matTmul(const double *a, const double *b, double m[3][3]) {
   m[2][2] = a[2] * b[2] + a[5] * b[5] + a[8] * b[8];
 }
 
-inline void quatToMat3(const double *qV, double m[3][3]){
-                       // double &m11, double &m12, double &m13,
-                       // double &m21, double &m22, double &m23, double &m31,
-                       // double &m32, double &m33) {
+inline void quatToMat3(const double *qV, double m[3][3]) {
+  // double &m11, double &m12, double &m13,
+  // double &m21, double &m22, double &m23, double &m31,
+  // double &m32, double &m33) {
   double w = qV[3];
   double x = qV[0];
   double y = qV[1];
@@ -188,8 +188,9 @@ inline double dist2(double x, double y, double z) {
 
 // finds transformation that diagonalizes a symmetric matrix
 inline void jacobiEigenanlysis( // symmetric matrix
-    double &s11, double &s21, double &s22, double &s31, double &s32,
-    double &s33,
+    double s[3][3], // We don't need the full matrix, but we pass it for clarity
+    // double &s11, double &s21, double &s22, double &s31, double &s32,
+    // double &s33,
     // quaternion representation of V
     double *qV) {
   qV[3] = 1;
@@ -201,9 +202,12 @@ inline void jacobiEigenanlysis( // symmetric matrix
     // on every iteration, but cycling over all 3 possible rotations
     // in fixed order (p,q) = (1,2) , (2,3), (1,3) still retains
     //  asymptotic convergence
-    jacobiConjugation(0, 1, 2, s11, s21, s22, s31, s32, s33, qV); // p,q = 0,1
-    jacobiConjugation(1, 2, 0, s11, s21, s22, s31, s32, s33, qV); // p,q = 1,2
-    jacobiConjugation(2, 0, 1, s11, s21, s22, s31, s32, s33, qV); // p,q = 0,2
+    jacobiConjugation(0, 1, 2, s[0][0], s[1][0], s[1][1], s[2][0], s[2][1],
+                      s[2][2], qV); // p,q = 0,1
+    jacobiConjugation(1, 2, 0, s[0][0], s[1][0], s[1][1], s[2][0], s[2][1],
+                      s[2][2], qV); // p,q = 1,2
+    jacobiConjugation(2, 0, 1, s[0][0], s[1][0], s[1][1], s[2][0], s[2][1],
+                      s[2][2], qV); // p,q = 0,2
   }
 }
 
@@ -354,8 +358,9 @@ inline void svd(double *a, double u[3][3], double s[3][3], double v[3][3]) {
 
   // symmetric eigenalysis
   double qV[4];
-  jacobiEigenanlysis(ATA[0][0], ATA[1][0], ATA[1][1], ATA[2][0], ATA[2][1],
-                     ATA[2][2], qV);
+  // jacobiEigenanlysis(ATA[0][0], ATA[1][0], ATA[1][1], ATA[2][0], ATA[2][1],
+  //                    ATA[2][2], qV);
+  jacobiEigenanlysis(ATA, qV);
   quatToMat3(qV, v);
 
   double b[3][3];

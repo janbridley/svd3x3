@@ -35,6 +35,15 @@ NB_MODULE(_c, m) {
     return dist2(x, y, z);
   });
   m.def(
+      "qr",
+      [](const Matrix33d a) -> std::tuple<Matrix33d, Matrix33d> {
+        double q[3][3];
+        double r[3][3];
+        QRDecomposition(reinterpret_cast<double(*)[3]>(a.data()), q, r);
+        return std::make_tuple(Matrix33d(q), Matrix33d(r));
+      },
+      nb::rv_policy::automatic);
+  m.def(
       "svd",
       [](const Matrix33d a) -> std::tuple<Matrix33d, Matrix33d, Matrix33d> {
         // TODO: remove, this is just for debugging

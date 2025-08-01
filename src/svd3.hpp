@@ -207,12 +207,14 @@ inline void jacobiEigenanlysis( // symmetric matrix
 }
 
 inline void sortSingularValues( // matrix that we want to decompose
-    // double &b11, double &b12, double &b13, double &b21, double &b22,
-    // double &b23, double &b31, double &b32, double &b33,
-    // // sort V simultaneously
-    // double &v11, double &v12, double &v13, double &v21, double &v22,
-    // double &v23, double &v31, double &v32, double &v33) {
-    double b[3][3], double v[3][3]){
+                                // double &b11, double &b12, double &b13, double
+                                // &b21, double &b22, double &b23, double &b31,
+                                // double &b32, double &b33,
+                                // // sort V simultaneously
+                                // double &v11, double &v12, double &v13, double
+                                // &v21, double &v22, double &v23, double &v31,
+                                // double &v32, double &v33) {
+    double b[3][3], double v[3][3]) {
   double rho1 = dist2(b[0][0], b[1][0], b[2][0]);
   double rho2 = dist2(b[0][1], b[1][1], b[2][1]);
   double rho3 = dist2(b[0][2], b[1][2], b[2][2]);
@@ -257,62 +259,66 @@ inline void QRGivensQuaternion(double a1, double a2, double &ch, double &sh) {
   sh *= w;
 }
 
-inline void QRDecomposition( // matrix that we want to decompose
-    double b00, double b01, double b02, double b10, double b11, double b12,
-    double b20, double b21, double b22,
+inline void
+QRDecomposition( // matrix that we want to decompose
+                 // double b00, double b01, double b02, double b10, double b11,
+                 // double b12, double b20, double b21, double b22,
+    double b[3][3],
     // output Q
-    double &q00, double &q01, double &q02, double &q10, double &q11,
-    double &q12, double &q20, double &q21, double &q22,
+    // double &q00, double &q01, double &q02, double &q10, double &q11,
+    // double &q12, double &q20, double &q21, double &q22,
+    double q[3][3],
     // output R
-    double &r00, double &r01, double &r02, double &r10, double &r11,
-    double &r12, double &r20, double &r21, double &r22) {
+    // double &r00, double &r01, double &r02, double &r10, double &r11,
+    // double &r12, double &r20, double &r21, double &r22) {
+    double r[3][3]) {
   double ch1, sh1, ch2, sh2, ch3, sh3;
-  double a, b;
+  double aa, bb;
 
   // first givens rotation (ch,0,0,sh)
-  QRGivensQuaternion(b00, b10, ch1, sh1);
-  a = 1 - 2 * sh1 * sh1;
-  b = 2 * ch1 * sh1;
+  QRGivensQuaternion(b[0][0], b[1][0], ch1, sh1);
+  aa = 1 - 2 * sh1 * sh1;
+  bb = 2 * ch1 * sh1;
   // apply B = Q' * B
-  r00 = a * b00 + b * b10;
-  r01 = a * b01 + b * b11;
-  r02 = a * b02 + b * b12;
-  r10 = -b * b00 + a * b10;
-  r11 = -b * b01 + a * b11;
-  r12 = -b * b02 + a * b12;
-  r20 = b20;
-  r21 = b21;
-  r22 = b22;
+  r[0][0] = aa * b[0][0] + bb * b[1][0];
+  r[0][1] = aa * b[0][1] + bb * b[1][1];
+  r[0][2] = aa * b[0][2] + bb * b[1][2];
+  r[1][0] = -bb * b[0][0] + aa * b[1][0];
+  r[1][1] = -bb * b[0][1] + aa * b[1][1];
+  r[1][2] = -bb * b[0][2] + aa * b[1][2];
+  r[2][0] = b[2][0];
+  r[2][1] = b[2][1];
+  r[2][2] = b[2][2];
 
   // second givens rotation (ch,0,-sh,0)
-  QRGivensQuaternion(r00, r20, ch2, sh2);
-  a = 1 - 2 * sh2 * sh2;
-  b = 2 * ch2 * sh2;
+  QRGivensQuaternion(r[0][0], r[2][0], ch2, sh2);
+  aa = 1 - 2 * sh2 * sh2;
+  bb = 2 * ch2 * sh2;
   // apply B = Q' * B;
-  b00 = a * r00 + b * r20;
-  b01 = a * r01 + b * r21;
-  b02 = a * r02 + b * r22;
-  b10 = r10;
-  b11 = r11;
-  b12 = r12;
-  b20 = -b * r00 + a * r20;
-  b21 = -b * r01 + a * r21;
-  b22 = -b * r02 + a * r22;
+  b[0][0] = aa * r[0][0] + bb * r[2][0];
+  b[0][1] = aa * r[0][1] + bb * r[2][1];
+  b[0][2] = aa * r[0][2] + bb * r[2][2];
+  b[1][0] = r[1][0];
+  b[1][1] = r[1][1];
+  b[1][2] = r[1][2];
+  b[2][0] = -bb * r[0][0] + aa * r[2][0];
+  b[2][1] = -bb * r[0][1] + aa * r[2][1];
+  b[2][2] = -bb * r[0][2] + aa * r[2][2];
 
   // third givens rotation (ch,sh,0,0)
-  QRGivensQuaternion(b11, b21, ch3, sh3);
-  a = 1 - 2 * sh3 * sh3;
-  b = 2 * ch3 * sh3;
+  QRGivensQuaternion(b[1][1], b[2][1], ch3, sh3);
+  aa = 1 - 2 * sh3 * sh3;
+  bb = 2 * ch3 * sh3;
   // R is now set to desired value
-  r00 = b00;
-  r01 = b01;
-  r02 = b02;
-  r10 = a * b10 + b * b20;
-  r11 = a * b11 + b * b21;
-  r12 = a * b12 + b * b22;
-  r20 = -b * b10 + a * b20;
-  r21 = -b * b11 + a * b21;
-  r22 = -b * b12 + a * b22;
+  r[0][0] = b[0][0];
+  r[0][1] = b[0][1];
+  r[0][2] = b[0][2];
+  r[1][0] = aa * b[1][0] + bb * b[2][0];
+  r[1][1] = aa * b[1][1] + bb * b[2][1];
+  r[1][2] = aa * b[1][2] + bb * b[2][2];
+  r[2][0] = -bb * b[1][0] + aa * b[2][0];
+  r[2][1] = -bb * b[1][1] + aa * b[2][1];
+  r[2][2] = -bb * b[1][2] + aa * b[2][2];
 
   // construct the cumulative rotation Q=Q1 * Q2 * Q3
   // the number of doubleing point operations for three quaternion
@@ -322,24 +328,24 @@ inline void QRDecomposition( // matrix that we want to decompose
   double sh22 = sh2 * sh2;
   double sh32 = sh3 * sh3;
 
-  q00 = (-1 + 2 * sh12) * (-1 + 2 * sh22);
-  q01 = 4 * ch2 * ch3 * (-1 + 2 * sh12) * sh2 * sh3 +
+  q[0][0] = (-1 + 2 * sh12) * (-1 + 2 * sh22);
+  q[0][1] = 4 * ch2 * ch3 * (-1 + 2 * sh12) * sh2 * sh3 +
         2 * ch1 * sh1 * (-1 + 2 * sh32);
-  q02 = 4 * ch1 * ch3 * sh1 * sh3 -
+  q[0][2] = 4 * ch1 * ch3 * sh1 * sh3 -
         2 * ch2 * (-1 + 2 * sh12) * sh2 * (-1 + 2 * sh32);
 
-  q10 = 2 * ch1 * sh1 * (1 - 2 * sh22);
-  q11 = -8 * ch1 * ch2 * ch3 * sh1 * sh2 * sh3 +
+  q[1][0] = 2 * ch1 * sh1 * (1 - 2 * sh22);
+  q[1][1] = -8 * ch1 * ch2 * ch3 * sh1 * sh2 * sh3 +
         (-1 + 2 * sh12) * (-1 + 2 * sh32);
-  q12 = -2 * ch3 * sh3 +
+  q[1][2] = -2 * ch3 * sh3 +
         4 * sh1 * (ch3 * sh1 * sh3 + ch1 * ch2 * sh2 * (-1 + 2 * sh32));
 
-  q20 = 2 * ch2 * sh2;
-  q21 = 2 * ch3 * (1 - 2 * sh22) * sh3;
-  q22 = (-1 + 2 * sh22) * (-1 + 2 * sh32);
+  q[2][0] = 2 * ch2 * sh2;
+  q[2][1] = 2 * ch3 * (1 - 2 * sh22) * sh3;
+  q[2][2] = (-1 + 2 * sh22) * (-1 + 2 * sh32);
 }
 
-void svd(double *a, double u[3][3], double s[3][3], double v[3][3]) {
+inline void svd(double *a, double u[3][3], double s[3][3], double v[3][3]) {
   // normal equations matrix
   double ATA[3][3];
 
@@ -359,11 +365,8 @@ void svd(double *a, double u[3][3], double s[3][3], double v[3][3]) {
   // sort singular values and find V
   sortSingularValues(b, v);
 
-    // QR decomposition
-  //   QRDecomposition(b00, b01, b02, b10, b11, b12, b20, b21, b22, u00, u01,
-  //   u02,
-  //                   u10, u11, u12, u20, u21, u22, s00, s01, s02, s10, s11,
-  //                   s12, s20, s21, s22);
+  // QR decomposition
+  QRDecomposition(b, u, s);
 }
 
 /// polar decomposition can be reconstructed trivially from SVD result

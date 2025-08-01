@@ -5,6 +5,8 @@ code by Eric Jang. This version of the library includes Python bindings for ease
 and testing.
 """
 # import _c
-from ._c import add
+import math
+from ._c import add, rsqrt
 
 print(add(2,3))
+print(rsqrt(2.1), 1/math.sqrt(2.1))

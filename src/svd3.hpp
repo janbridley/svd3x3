@@ -358,8 +358,6 @@ inline void svd(double *a, double u[3][3], double s[3][3], double v[3][3]) {
 
   // symmetric eigenalysis
   double qV[4];
-  // jacobiEigenanlysis(ATA[0][0], ATA[1][0], ATA[1][1], ATA[2][0], ATA[2][1],
-  //                    ATA[2][2], qV);
   jacobiEigenanlysis(ATA, qV);
   quatToMat3(qV, v);
 

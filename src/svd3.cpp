@@ -15,12 +15,6 @@ using NBMatrix33 = nb::ndarray<double, nb::numpy, nb::shape<3, 3>>;
 
 namespace wrap {
 
-// NBMatrix33 pymatmul(const NBMatrix33 &a, const NBMatrix33 &b) {
-//   // NBMatrix33 res;
-//   double m[9];
-//   matmul(a.data(), b.data(), m);
-//   return NBMatrix33(m).cast();
-// }
 
 // std::tuple<Matrix33, Matrix33, Matrix33> svd(const Matrix33 a) {
 void pysvd(const NBMatrix33 &a) {
@@ -58,19 +52,29 @@ void pysvd(const NBMatrix33 &a) {
 
 }; // End namespace wrap
 
-
 NB_MODULE(_c, m) {
   m.def("add", [](int a, int b) { return a + b; }, "a"_a, "b"_a);
   m.def("rsqrt", &rsqrt);
   // m.def("svd", &wrap::pysvd);
   // m.def("matmul", &wrap::pymatmul);
   m.def("return_m33", [] {
-    double data[3][3] = {1,2,3,4,5,6,7,8,9};
+    double data[3][3] = {1, 2, 3, 4, 5, 6, 7, 8, 9};
     return NBMatrix33(data).cast();
   });
   m.def("take_and_return_m33", [](const NBMatrix33 inpt) {
     double data[3][3];
-    inpt(1,1) += 3.0;
-    return NBMatrix33(inpt.data()).cast();
+    inpt(1, 1) += 3.0; // MODIFIES INOUPT
+    // return NBMatrix33(inpt.data()).cast();
+    return NBMatrix33(data).cast();
+  });
+  m.def("mul_a_b", [](const NBMatrix33 a, const NBMatrix33 b) {
+    double m[3][3];
+    matmul(a.data(), b.data(), m);
+    return NBMatrix33(m).cast();
+  });
+  m.def("mul_at_b", [](const NBMatrix33 a, const NBMatrix33 b) {
+    double m[3][3];
+    matTmul(a.data(), b.data(), m);
+    return NBMatrix33(m).cast();
   });
 }

@@ -4,7 +4,7 @@ import rowan
 from hypothesis import given, settings, HealthCheck, strategies as st
 from conftest import generate_random_matrixes, nonsingular_3x3_matrices
 import numpy as np
-from svd3x3._c import mul_a_b, mul_at_b, svd, rsqrt, q2mat3
+from svd3x3._c import mul_a_b, mul_at_b, svd, rsqrt, q2mat3, norm2
 
 # TODO: generate meaningful test matrixes
 N = 20
@@ -20,13 +20,15 @@ def test_rsqrt(x):
     np.testing.assert_allclose(rsqrt(x), 1 / np.sqrt(x))
 
 
+@given(st.floats(), st.floats(), st.floats())
+def test_dist_squared(x, y, z):
+    np.testing.assert_allclose(norm2(x, y, z), np.einsum("i,i->", [x, y, z], [x, y, z]))
+
+
 @pytest.mark.parametrize("q", rowan.random.rand(N**2))
 def test_q_to_mat(q):
     q_xyzw = np.array([*q[1:], q[0]])
     np.testing.assert_allclose(q2mat3(q_xyzw), rowan.to_matrix(q))
-    # assert np.array_equal(q2mat3(q), rowan.to_matrix(q)) or np.array_equal(
-    #     q2mat3(q), rowan.to_matrix(rowan.inverse(q))
-    # )
 
 
 @pytest.mark.parametrize("a", generate_random_matrixes(N))

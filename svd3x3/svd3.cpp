@@ -31,6 +31,9 @@ NB_MODULE(_c, m) {
     quatToMat3(q.data(), m);
     return Matrix33d(m).cast();
   });
+  m.def("norm2", [](const double x, const double y, const double z) {
+    return dist2(x, y, z);
+  });
   m.def(
       "svd",
       [](const Matrix33d a) -> std::tuple<Matrix33d, Matrix33d, Matrix33d> {

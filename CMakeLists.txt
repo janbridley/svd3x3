@@ -52,6 +52,7 @@ nanobind_add_module(
   # Source code goes here
   src/svd3.cpp
 )
-
+set(BUILD_MODE Debug)
+set(CMAKE_CXX_FLAGS_DEBUG "-g")
 # Install directive for scikit-build-core
 install(TARGETS _c LIBRARY DESTINATION svd3x3)

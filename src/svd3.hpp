@@ -77,9 +77,6 @@ inline void matTmul(const double *a, const double *b, double m[3][3]) {
 }
 
 inline void quatToMat3(const double *qV, double m[3][3]) {
-  // double &m11, double &m12, double &m13,
-  // double &m21, double &m22, double &m23, double &m31,
-  // double &m32, double &m33) {
   double w = qV[3];
   double x = qV[0];
   double y = qV[1];
@@ -187,12 +184,9 @@ inline double dist2(double x, double y, double z) {
 }
 
 // finds transformation that diagonalizes a symmetric matrix
-inline void jacobiEigenanlysis( // symmetric matrix
-    double s[3][3], // We don't need the full matrix, but we pass it for clarity
-    // double &s11, double &s21, double &s22, double &s31, double &s32,
-    // double &s33,
-    // quaternion representation of V
-    double *qV) {
+inline void jacobiEigenanlysis(
+    // We don't need the full matrix, but we pass it for clarity
+    double s[3][3], double *qV) {
   qV[3] = 1;
   qV[0] = 0;
   qV[1] = 0;
@@ -211,15 +205,7 @@ inline void jacobiEigenanlysis( // symmetric matrix
   }
 }
 
-inline void sortSingularValues( // matrix that we want to decompose
-                                // double &b11, double &b12, double &b13, double
-                                // &b21, double &b22, double &b23, double &b31,
-                                // double &b32, double &b33,
-                                // // sort V simultaneously
-                                // double &v11, double &v12, double &v13, double
-                                // &v21, double &v22, double &v23, double &v31,
-                                // double &v32, double &v33) {
-    double b[3][3], double v[3][3]) {
+inline void sortSingularValues(double b[3][3], double v[3][3]) {
   double rho1 = dist2(b[0][0], b[1][0], b[2][0]);
   double rho2 = dist2(b[0][1], b[1][1], b[2][1]);
   double rho3 = dist2(b[0][2], b[1][2], b[2][2]);
@@ -264,19 +250,7 @@ inline void QRGivensQuaternion(double a1, double a2, double &ch, double &sh) {
   sh *= w;
 }
 
-inline void
-QRDecomposition( // matrix that we want to decompose
-                 // double b00, double b01, double b02, double b10, double b11,
-                 // double b12, double b20, double b21, double b22,
-    double b[3][3],
-    // output Q
-    // double &q00, double &q01, double &q02, double &q10, double &q11,
-    // double &q12, double &q20, double &q21, double &q22,
-    double q[3][3],
-    // output R
-    // double &r00, double &r01, double &r02, double &r10, double &r11,
-    // double &r12, double &r20, double &r21, double &r22) {
-    double r[3][3]) {
+inline void QRDecomposition(double b[3][3], double q[3][3], double r[3][3]) {
   double ch1, sh1, ch2, sh2, ch3, sh3;
   double aa, bb;
 

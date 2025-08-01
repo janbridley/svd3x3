@@ -49,17 +49,6 @@ inline void condNegSwap(bool c, double &X, double &Y) {
 }
 
 // matrix multiplication M = A * B
-// inline void matmul(const double *a, const double *b, double m[3][3]) {
-//   m[0][0] = a[0] * b[0] + a[1] * b[3] + a[2] * b[6];
-//   m[0][1] = a[0] * b[1] + a[1] * b[4] + a[2] * b[7];
-//   m[0][2] = a[0] * b[2] + a[1] * b[5] + a[2] * b[8];
-//   m[1][0] = a[3] * b[0] + a[4] * b[3] + a[5] * b[6];
-//   m[1][1] = a[3] * b[1] + a[4] * b[4] + a[5] * b[7];
-//   m[1][2] = a[3] * b[2] + a[4] * b[5] + a[5] * b[8];
-//   m[2][0] = a[6] * b[0] + a[7] * b[3] + a[8] * b[6];
-//   m[2][1] = a[6] * b[1] + a[7] * b[4] + a[8] * b[7];
-//   m[2][2] = a[6] * b[2] + a[7] * b[5] + a[8] * b[8];
-// }
 inline void matmul(const double a[3][3], const double b[3][3], double m[3][3]) {
   m[0][0] = a[0][0] * b[0][0] + a[0][1] * b[1][0] + a[0][2] * b[2][0];
   m[0][1] = a[0][0] * b[0][1] + a[0][1] * b[1][1] + a[0][2] * b[2][1];
@@ -71,6 +60,7 @@ inline void matmul(const double a[3][3], const double b[3][3], double m[3][3]) {
   m[2][1] = a[2][0] * b[0][1] + a[2][1] * b[1][1] + a[2][2] * b[2][1];
   m[2][2] = a[2][0] * b[0][2] + a[2][1] * b[1][2] + a[2][2] * b[2][2];
 }
+// matrix multiplication M = A.T * B
 inline void matTmul(const double a[3][3], const double b[3][3], double m[3][3]) {
   m[0][0] = a[0][0] * b[0][0] + a[1][0] * b[1][0] + a[2][0] * b[2][0];
   m[0][1] = a[0][0] * b[0][1] + a[1][0] * b[1][1] + a[2][0] * b[2][1];

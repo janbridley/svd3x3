@@ -52,10 +52,6 @@ inline void condNegSwap(bool c, double &X, double &Y) {
   Y = c ? Z : Y;
 }
 
-// inline void fill_with_nums(double inpt[9]) {
-//   inpt = {{0.0,1.0,2.0,3.0,4.0,5.0,6.0,7.0,8.0}};
-// }
-
 // matrix multiplication M = A * B
 inline void matmul(const double *a, const double *b, double m[3][3]) {
   m[0][0] = a[0] * b[0] + a[1] * b[3] + a[2] * b[6];

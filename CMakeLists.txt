@@ -49,8 +49,8 @@ nanobind_add_module(
   STABLE_ABI
   NB_STATIC
 
-  # Source code goes here
-  src/svd3.cpp
+  # Source code (export file) goes here
+  svd3x3/svd3.cpp
 )
 set(BUILD_MODE Debug)
 set(CMAKE_CXX_FLAGS_DEBUG "-g")

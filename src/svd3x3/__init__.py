@@ -7,7 +7,7 @@ and testing.
 
 # import _c
 import math, numpy as np
-from ._c import add, rsqrt,  return_m33, take_and_return_m33
+from ._c import add, rsqrt,  return_m33, mul_a_b
 
 print(add(2, 3))
 np.testing.assert_allclose(rsqrt(2.1), 1 / math.sqrt(2.1))
@@ -31,4 +31,10 @@ u, s, v = np.eye(3)*2, np.ones((3, 3)), np.eye(3)
 # print(matmul(u, s))
 # print(s)
 print(return_m33())
-print(take_and_return_m33(u))
+print()
+print()
+print(s)
+print(u)
+print()
+# print(take_and_return_m33(u))
+print(mul_a_b(s, u))

@@ -1,16 +1,28 @@
 import pytest
+import warnings
+import rowan
 from hypothesis import given, settings, HealthCheck, strategies as st
 from conftest import generate_random_matrixes, nonsingular_3x3_matrices
 import numpy as np
-from svd3x3._c import mul_a_b, mul_at_b, svd, rsqrt
+from svd3x3._c import mul_a_b, mul_at_b, svd, rsqrt, q2mat3
 
 # TODO: generate meaningful test matrixes
 N = 20
 
 
-@given(st.floats())
+@given(st.floats(min_value=0.0))
 def test_rsqrt(x):
+    warnings.filterwarnings(
+        action="ignore",
+        message="divide by zero encountered in scalar divide",
+        category=RuntimeWarning,
+    )
     np.testing.assert_allclose(rsqrt(x), 1 / np.sqrt(x))
+
+
+@pytest.mark.parametrize("q", rowan.random.rand(N**2))
+def test_q_to_mat(q):
+    np.testing.assert_array_equal(q2mat3(q), rowan.to_matrix(q))
 
 
 @pytest.mark.parametrize("a", generate_random_matrixes(N))

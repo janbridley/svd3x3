@@ -89,7 +89,7 @@ inline void quatToMat3(const double *qV, double m[3][3]) {
   double qwy = w * y;
   double qwz = w * z;
 
-  m[2][2] = 1 - 2 * (qyy + qzz);
+  m[0][0] = 1 - 2 * (qyy + qzz);
   m[0][1] = 2 * (qxy - qwz);
   m[0][2] = 2 * (qxz + qwy);
   m[1][0] = 2 * (qxy + qwz);
@@ -97,7 +97,7 @@ inline void quatToMat3(const double *qV, double m[3][3]) {
   m[1][2] = 2 * (qyz - qwx);
   m[2][0] = 2 * (qxz - qwy);
   m[2][1] = 2 * (qyz + qwx);
-  m[0][0] = 1 - 2 * (qxx + qyy);
+  m[2][2] = 1 - 2 * (qxx + qyy);
 }
 
 inline void approximateGivensQuaternion(double a11, double a12, double a22,

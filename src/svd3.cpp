@@ -30,7 +30,8 @@ NB_MODULE(_c, m) {
         double u[3][3] = {-999, -999, -999, -999, -999, -999, -999, -999, -999};
         double s[3][3] = {-999, -999, -999, -999, -999, -999, -999, -999, -999};
         double v[3][3] = {-999, -999, -999, -999, -999, -999, -999, -999, -999};
-        svd(a.data(), u, s, v);
+        // svd(a.data(), u, s, v);
         return std::make_tuple(Matrix33(u), Matrix33(s), Matrix33(v));
-      });
+      },
+      nb::rv_policy::automatic);
 }

@@ -4,3 +4,7 @@ This is an implementation of the method described in [Computing the Singular Val
 code by Eric Jang. This version of the library includes Python bindings for ease of use
 and testing.
 """
+# import _c
+from ._c import add
+
+print(add(2,3))

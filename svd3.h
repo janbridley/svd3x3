@@ -71,16 +71,16 @@ inline void matmul(const double a[3][3], const double b[3][3], double m[3][3]) {
   m[2][1] = a[2][0] * b[0][1] + a[2][1] * b[1][1] + a[2][2] * b[2][1];
   m[2][2] = a[2][0] * b[0][2] + a[2][1] * b[1][2] + a[2][2] * b[2][2];
 }
-inline void matTmul(const double *a, const double *b, double m[3][3]) {
-  m[0][0] = a[0] * b[0] + a[3] * b[3] + a[6] * b[6];
-  m[0][1] = a[0] * b[1] + a[3] * b[4] + a[6] * b[7];
-  m[0][2] = a[0] * b[2] + a[3] * b[5] + a[6] * b[8];
-  m[1][0] = a[1] * b[0] + a[4] * b[3] + a[7] * b[6];
-  m[1][1] = a[1] * b[1] + a[4] * b[4] + a[7] * b[7];
-  m[1][2] = a[1] * b[2] + a[4] * b[5] + a[7] * b[8];
-  m[2][0] = a[2] * b[0] + a[5] * b[3] + a[8] * b[6];
-  m[2][1] = a[2] * b[1] + a[5] * b[4] + a[8] * b[7];
-  m[2][2] = a[2] * b[2] + a[5] * b[5] + a[8] * b[8];
+inline void matTmul(const double a[3][3], const double b[3][3], double m[3][3]) {
+  m[0][0] = a[0][0] * b[0][0] + a[1][0] * b[1][0] + a[2][0] * b[2][0];
+  m[0][1] = a[0][0] * b[0][1] + a[1][0] * b[1][1] + a[2][0] * b[2][1];
+  m[0][2] = a[0][0] * b[0][2] + a[1][0] * b[1][2] + a[2][0] * b[2][2];
+  m[1][0] = a[0][1] * b[0][0] + a[1][1] * b[1][0] + a[2][1] * b[2][0];
+  m[1][1] = a[0][1] * b[0][1] + a[1][1] * b[1][1] + a[2][1] * b[2][1];
+  m[1][2] = a[0][1] * b[0][2] + a[1][1] * b[1][2] + a[2][1] * b[2][2];
+  m[2][0] = a[0][2] * b[0][0] + a[1][2] * b[1][0] + a[2][2] * b[2][0];
+  m[2][1] = a[0][2] * b[0][1] + a[1][2] * b[1][1] + a[2][2] * b[2][1];
+  m[2][2] = a[0][2] * b[0][2] + a[1][2] * b[1][2] + a[2][2] * b[2][2];
 }
 
 inline void quatToMat3(const double *qV, double m[3][3]) {
@@ -331,7 +331,7 @@ inline void QRDecomposition(double b[3][3], double q[3][3], double r[3][3]) {
   q[2][2] = (-1 + 2 * sh22) * (-1 + 2 * sh32);
 }
 
-inline void svd(double *a, double u[3][3], double s[3][3], double v[3][3]) {
+inline void svd(double a[3][3], double u[3][3], double s[3][3], double v[3][3]) {
   // normal equations matrix
   double ATA[3][3];
 
@@ -343,7 +343,7 @@ inline void svd(double *a, double u[3][3], double s[3][3], double v[3][3]) {
   quatToMat3(qV, v);
 
   double b[3][3];
-  matTmul(a, reinterpret_cast<double *>(v), b);
+  matTmul(a, v, b);
 
   // sort singular values and find V
   sortSingularValues(b, v);

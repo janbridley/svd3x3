@@ -21,7 +21,8 @@ NB_MODULE(_c, m) {
   });
   m.def("mul_at_b", [](const Matrix33 a, const Matrix33 b) {
     double m[3][3];
-    matTmul(a.data(), b.data(), m);
+    matTmul(reinterpret_cast<double(*)[3]>(a.data()),
+           reinterpret_cast<double(*)[3]>(b.data()), m);
     return Matrix33(m).cast();
   });
   m.def(
@@ -31,7 +32,7 @@ NB_MODULE(_c, m) {
         double u[3][3] = {-999, -999, -999, -999, -999, -999, -999, -999, -999};
         double s[3][3] = {-999, -999, -999, -999, -999, -999, -999, -999, -999};
         double v[3][3] = {-999, -999, -999, -999, -999, -999, -999, -999, -999};
-        svd(a.data(), u, s, v);
+        svd(reinterpret_cast<double(*)[3]>(a.data()), u, s, v);
         return std::make_tuple(Matrix33(u), Matrix33(s), Matrix33(v));
       },
       nb::rv_policy::automatic);

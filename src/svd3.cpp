@@ -1,4 +1,4 @@
-#include "svd3.hpp"
+#include "../svd3.h"
 #include <nanobind/nanobind.h>
 #include <nanobind/ndarray.h>
 #include <nanobind/stl/tuple.h>

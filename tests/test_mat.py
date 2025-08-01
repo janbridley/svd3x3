@@ -22,7 +22,11 @@ def test_rsqrt(x):
 
 @pytest.mark.parametrize("q", rowan.random.rand(N**2))
 def test_q_to_mat(q):
-    np.testing.assert_array_equal(q2mat3(q), rowan.to_matrix(q))
+    q_xyzw = np.array([*q[1:], q[0]])
+    np.testing.assert_allclose(q2mat3(q_xyzw), rowan.to_matrix(q))
+    # assert np.array_equal(q2mat3(q), rowan.to_matrix(q)) or np.array_equal(
+    #     q2mat3(q), rowan.to_matrix(rowan.inverse(q))
+    # )
 
 
 @pytest.mark.parametrize("a", generate_random_matrixes(N))

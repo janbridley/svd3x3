@@ -76,9 +76,10 @@ inline void matTmul(const double *a, const double *b, double m[3][3]) {
   m[2][2] = a[2] * b[2] + a[5] * b[5] + a[8] * b[8];
 }
 
-inline void quatToMat3(const double *qV, double &m11, double &m12, double &m13,
-                       double &m21, double &m22, double &m23, double &m31,
-                       double &m32, double &m33) {
+inline void quatToMat3(const double *qV, double m[3][3]){
+                       // double &m11, double &m12, double &m13,
+                       // double &m21, double &m22, double &m23, double &m31,
+                       // double &m32, double &m33) {
   double w = qV[3];
   double x = qV[0];
   double y = qV[1];
@@ -94,15 +95,15 @@ inline void quatToMat3(const double *qV, double &m11, double &m12, double &m13,
   double qwy = w * y;
   double qwz = w * z;
 
-  m11 = 1 - 2 * (qyy + qzz);
-  m12 = 2 * (qxy - qwz);
-  m13 = 2 * (qxz + qwy);
-  m21 = 2 * (qxy + qwz);
-  m22 = 1 - 2 * (qxx + qzz);
-  m23 = 2 * (qyz - qwx);
-  m31 = 2 * (qxz - qwy);
-  m32 = 2 * (qyz + qwx);
-  m33 = 1 - 2 * (qxx + qyy);
+  m[0][0] = 1 - 2 * (qyy + qzz);
+  m[0][1] = 2 * (qxy - qwz);
+  m[0][2] = 2 * (qxz + qwy);
+  m[1][0] = 2 * (qxy + qwz);
+  m[1][1] = 1 - 2 * (qxx + qzz);
+  m[1][2] = 2 * (qyz - qwx);
+  m[2][0] = 2 * (qxz - qwy);
+  m[2][1] = 2 * (qyz + qwx);
+  m[2][2] = 1 - 2 * (qxx + qyy);
 }
 
 inline void approximateGivensQuaternion(double a11, double a12, double a22,
@@ -330,15 +331,15 @@ QRDecomposition( // matrix that we want to decompose
 
   q[0][0] = (-1 + 2 * sh12) * (-1 + 2 * sh22);
   q[0][1] = 4 * ch2 * ch3 * (-1 + 2 * sh12) * sh2 * sh3 +
-        2 * ch1 * sh1 * (-1 + 2 * sh32);
+            2 * ch1 * sh1 * (-1 + 2 * sh32);
   q[0][2] = 4 * ch1 * ch3 * sh1 * sh3 -
-        2 * ch2 * (-1 + 2 * sh12) * sh2 * (-1 + 2 * sh32);
+            2 * ch2 * (-1 + 2 * sh12) * sh2 * (-1 + 2 * sh32);
 
   q[1][0] = 2 * ch1 * sh1 * (1 - 2 * sh22);
   q[1][1] = -8 * ch1 * ch2 * ch3 * sh1 * sh2 * sh3 +
-        (-1 + 2 * sh12) * (-1 + 2 * sh32);
+            (-1 + 2 * sh12) * (-1 + 2 * sh32);
   q[1][2] = -2 * ch3 * sh3 +
-        4 * sh1 * (ch3 * sh1 * sh3 + ch1 * ch2 * sh2 * (-1 + 2 * sh32));
+            4 * sh1 * (ch3 * sh1 * sh3 + ch1 * ch2 * sh2 * (-1 + 2 * sh32));
 
   q[2][0] = 2 * ch2 * sh2;
   q[2][1] = 2 * ch3 * (1 - 2 * sh22) * sh3;
@@ -355,9 +356,7 @@ inline void svd(double *a, double u[3][3], double s[3][3], double v[3][3]) {
   double qV[4];
   jacobiEigenanlysis(ATA[0][0], ATA[1][0], ATA[1][1], ATA[2][0], ATA[2][1],
                      ATA[2][2], qV);
-  // jacobiEigenanlysis(ATA00, ATA10, ATA11, ATA20, ATA21, ATA22, qV);
-  quatToMat3(qV, v[0][0], v[0][1], v[0][2], v[1][0], v[1][1], v[1][2], v[2][0],
-             v[2][1], v[2][2]);
+  quatToMat3(qV, v);
 
   double b[3][3];
   matTmul(a, reinterpret_cast<double *>(v), b);

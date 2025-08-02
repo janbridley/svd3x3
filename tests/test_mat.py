@@ -45,14 +45,20 @@ def test_matmul_transposed(a, b):
     np.testing.assert_allclose(mul_at_b(a[:], b[:]), a.T @ b)
 
 
+@pytest.mark.parametrize("a", generate_random_matrixes(N))
+def test_aTa(a):
+    b = deepcopy(a)
+    np.testing.assert_allclose(mul_at_b(a[:], a[:]), a.T @ a)
+    np.testing.assert_array_equal(a, b)
+
+
 @pytest.mark.parametrize("a", generate_random_matrixes(N**2))
 def test_qr(a):
     b = deepcopy(a)
     q, r = qr(a)
     np.testing.assert_array_equal(a, b)
-    
 
-    np.linalg.inv(a) # Will raise LinAlgError if a is not invertible
+    np.linalg.inv(a)  # Will raise LinAlgError if a is not invertible
 
     # Validate properties: q should be mutually perpendicular unit vectors (Q.T=inv(Q))
     np.testing.assert_allclose(q.T, np.linalg.inv(q))
@@ -61,10 +67,10 @@ def test_qr(a):
     np.testing.assert_allclose(r, np.triu(r), atol=ATOL)
 
     # Validate the matrixes themselves are a correct decomposition
-    np.testing.assert_allclose(q@r, a)
+    np.testing.assert_allclose(q @ r, a)
 
     # TODO: I thought qr decomp should be unique, but we somehow do not match numpy
-    if all(a[[0,1,2], [0, 1, 2]] > 0):
+    if all(a[[0, 1, 2], [0, 1, 2]] > 0):
         return
         q_ref, r_ref = np.linalg.qr(a[:], mode="complete")
         np.testing.assert_allclose(q, q_ref)
@@ -73,8 +79,10 @@ def test_qr(a):
 
 @pytest.mark.parametrize("a", generate_random_matrixes(N**2))
 def test_svd(a):
-    ref_u, ref_s, ref_v = np.linalg.svd(a[:])
-    u, s, v = svd(a[:])
+    b = deepcopy(a)
+    ref_u, ref_s, ref_v = np.linalg.svd(a)
+    u, s, v = svd(a)
+    np.testing.assert_array_equal(a, b)
     np.testing.assert_allclose(u, ref_u)
     np.testing.assert_allclose(s.round(13), np.diag(ref_s))
     np.testing.assert_allclose(v, ref_v)

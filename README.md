@@ -37,6 +37,10 @@ svd(a11, a12, a13, a21, a22, a23, a31, a32, a33,
 
 See the included Mathematica notebook for derivations of numerical shortcuts.
 
+### Major changes
+
+- QR decomposition no longer modifies input matrix
+
 ## License
 
 MIT License, Eric V. Jang 2014, Jenna Bradley 2025

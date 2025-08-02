@@ -271,30 +271,31 @@ inline void QRDecomposition(double b[3][3], double q[3][3], double r[3][3]) {
   aa = 1 - 2 * sh2 * sh2;
   bb = 2 * ch2 * sh2;
   // apply B = Q' * B;
-  b[0][0] = aa * r[0][0] + bb * r[2][0];
-  b[0][1] = aa * r[0][1] + bb * r[2][1];
-  b[0][2] = aa * r[0][2] + bb * r[2][2];
-  b[1][0] = r[1][0];
-  b[1][1] = r[1][1];
-  b[1][2] = r[1][2];
-  b[2][0] = -bb * r[0][0] + aa * r[2][0];
-  b[2][1] = -bb * r[0][1] + aa * r[2][1];
-  b[2][2] = -bb * r[0][2] + aa * r[2][2];
+  double qprimeb[3][3];
+  qprimeb[0][0] = aa * r[0][0] + bb * r[2][0];
+  qprimeb[0][1] = aa * r[0][1] + bb * r[2][1];
+  qprimeb[0][2] = aa * r[0][2] + bb * r[2][2];
+  qprimeb[1][0] = r[1][0];
+  qprimeb[1][1] = r[1][1];
+  qprimeb[1][2] = r[1][2];
+  qprimeb[2][0] = -bb * r[0][0] + aa * r[2][0];
+  qprimeb[2][1] = -bb * r[0][1] + aa * r[2][1];
+  qprimeb[2][2] = -bb * r[0][2] + aa * r[2][2];
 
   // third givens rotation (ch,sh,0,0)
-  QRGivensQuaternion(b[1][1], b[2][1], ch3, sh3);
+  QRGivensQuaternion(qprimeb[1][1], qprimeb[2][1], ch3, sh3);
   aa = 1 - 2 * sh3 * sh3;
   bb = 2 * ch3 * sh3;
   // R is now set to desired value
-  r[0][0] = b[0][0];
-  r[0][1] = b[0][1];
-  r[0][2] = b[0][2];
-  r[1][0] = aa * b[1][0] + bb * b[2][0];
-  r[1][1] = aa * b[1][1] + bb * b[2][1];
-  r[1][2] = aa * b[1][2] + bb * b[2][2];
-  r[2][0] = -bb * b[1][0] + aa * b[2][0];
-  r[2][1] = -bb * b[1][1] + aa * b[2][1];
-  r[2][2] = -bb * b[1][2] + aa * b[2][2];
+  r[0][0] = qprimeb[0][0];
+  r[0][1] = qprimeb[0][1];
+  r[0][2] = qprimeb[0][2];
+  r[1][0] = aa * qprimeb[1][0] + bb * qprimeb[2][0];
+  r[1][1] = aa * qprimeb[1][1] + bb * qprimeb[2][1];
+  r[1][2] = aa * qprimeb[1][2] + bb * qprimeb[2][2];
+  r[2][0] = -bb * qprimeb[1][0] + aa * qprimeb[2][0];
+  r[2][1] = -bb * qprimeb[1][1] + aa * qprimeb[2][1];
+  r[2][2] = -bb * qprimeb[1][2] + aa * qprimeb[2][2];
 
   // construct the cumulative rotation Q=Q1 * Q2 * Q3
   // the number of doubleing point operations for three quaternion

@@ -159,36 +159,37 @@ inline void approximateGivensQuaternion(
 inline void jacobiConjugation(const int x,
     const int y,
     const int z,
-    double& s11,
-    double& s21,
-    double& s22,
-    double& s31,
-    double& s32,
-    double& s33,
+    double s[3][3],
+    // double& s11,
+    // double& s21,
+    // double& s22,
+    // double& s31,
+    // double& s32,
+    // double& s33,
     double qV[4]) {
     double ch, sh;
-    approximateGivensQuaternion(s11, s21, s22, ch, sh);
+    approximateGivensQuaternion(s[0][0], s[1][0], s[1][1], ch, sh);
 
     double scale = ch * ch + sh * sh;
     double a = (ch * ch - sh * sh) / scale;
     double b = (2 * sh * ch) / scale;
 
     // make temp copy of S
-    double _s11 = s11;
-    double _s21 = s21;
-    double _s22 = s22;
-    double _s31 = s31;
-    double _s32 = s32;
-    double _s33 = s33;
+    double _s00 = s[0][0];
+    double _s10 = s[1][0];
+    double _s11 = s[1][1];
+    double _s20 = s[2][0];
+    double _s21 = s[2][1];
+    double _s22 = s[2][2];
 
     // perform conjugation S = Q'*S*Q
     // Q already implicitly solved from a, b
-    s11 = a * (a * _s11 + b * _s21) + b * (a * _s21 + b * _s22);
-    s21 = a * (-b * _s11 + a * _s21) + b * (-b * _s21 + a * _s22);
-    s22 = -b * (-b * _s11 + a * _s21) + a * (-b * _s21 + a * _s22);
-    s31 = a * _s31 + b * _s32;
-    s32 = -b * _s31 + a * _s32;
-    s33 = _s33;
+    s[0][0] = a * (a * _s00 + b * _s10) + b * (a * _s10 + b * _s11);
+    s[1][0] = a * (-b * _s00 + a * _s10) + b * (-b * _s10 + a * _s11);
+    s[1][1] = -b * (-b * _s00 + a * _s10) + a * (-b * _s10 + a * _s11);
+    s[2][0] = a * _s20 + b * _s21;
+    s[2][1] = -b * _s20 + a * _s21;
+    s[2][2] = _s22;
 
     // update cumulative rotation qV
     double tmp[3];
@@ -210,18 +211,18 @@ inline void jacobiConjugation(const int x,
     qV[y] -= tmp[x];
 
     // re-arrange matrix for next iteration
-    _s11 = s22;
-    _s21 = s32;
-    _s22 = s33;
-    _s31 = s21;
-    _s32 = s31;
-    _s33 = s11;
-    s11 = _s11;
-    s21 = _s21;
-    s22 = _s22;
-    s31 = _s31;
-    s32 = _s32;
-    s33 = _s33;
+    _s00 = s[1][1];
+    _s10 = s[2][1];
+    _s11 = s[2][2];
+    _s20 = s[1][0];
+    _s21 = s[2][0];
+    _s22 = s[0][0];
+    s[0][0] = _s00;
+    s[1][0] = _s10;
+    s[1][1] = _s11;
+    s[2][0] = _s20;
+    s[2][1] = _s21;
+    s[2][2] = _s22;
 }
 
 inline double dist2(double x, double y, double z) { return x * x + y * y + z * z; }
@@ -247,15 +248,12 @@ inline void jacobiEigenanalysis(
         // on every iteration, but cycling over all 3 possible rotations
         // in fixed order (p,q) = (1,2) , (2,3), (1,3) still retains
         //  asymptotic convergence
-        jacobiConjugation(
-            0, 1, 2, s[0][0], s[1][0], s[1][1], s[2][0], s[2][1], s[2][2], qV); // p,q =
-                                                                                // 0,1
-        jacobiConjugation(
-            1, 2, 0, s[0][0], s[1][0], s[1][1], s[2][0], s[2][1], s[2][2], qV); // p,q =
-                                                                                // 1,2
-        jacobiConjugation(
-            2, 0, 1, s[0][0], s[1][0], s[1][1], s[2][0], s[2][1], s[2][2], qV); // p,q =
-                                                                                // 0,2
+        jacobiConjugation(0, 1, 2, s, qV); // p,q =
+                                           // 0,1
+        jacobiConjugation(1, 2, 0, s, qV); // p,q =
+                                           // 1,2
+        jacobiConjugation(2, 0, 1, s, qV); // p,q =
+                                           // 0,2
     }
 }
 

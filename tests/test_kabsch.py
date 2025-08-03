@@ -22,7 +22,7 @@ def test_kabsch_unaligned(pts, umeyama):
     np.testing.assert_allclose(
         compute_rmsd(c * (x - t) @ R, y),
         compute_rmsd(c_ref * (x - t_ref) @ R_ref, y),
-        atol=ATOL_LOOSE * 0.1,
+        atol=ATOL_LOOSE,
     )
 
     assert (

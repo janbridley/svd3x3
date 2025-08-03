@@ -16,6 +16,20 @@ def generate_random_matrixes(n=1000, s=(3, 3)):
     return m
 
 
+def generate_crosscorrelation_matrixes(n=1000):
+    mats = []
+    for _ in range(n):
+        y = RNG.uniform(-10, 10, (4096, 3))
+        x = y + RNG.normal(loc=RNG.uniform(-10, 10), scale=RNG.uniform(0, 5))
+        tx, ty = x.mean(axis=0), y.mean(axis=0).round(12)
+        x0, y0 = x - tx, y - ty
+
+        # Compute cross-covariance between test and reference sets
+        H = (x0.T @ y0) / 4096
+        mats.append(H)
+    return np.array(mats)
+
+
 @composite
 def nonsingular_3x3_matrices(draw):
     while True:

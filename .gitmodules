@@ -1,0 +1,3 @@
+[submodule "extern/svd_prev"]
+	path = extern/svd_prev
+	url = https://github.com/ericjang/svd3.git

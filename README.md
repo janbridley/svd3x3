@@ -40,15 +40,15 @@ svd(a)
 ## Performance
 
 All execution time tests were evaluated on an M1 Pro, with CPU temperature maintained
-below 55°C for the entire duration
+below 55°C for the entire duration.
 
 |       Python API       |     Numpy SVD      |
 | :--------------------: | :----------------: |
 | **2.8460 ± 0.0304 μs** | 7.6621 ± 0.0158 μs |
 
-| C API | Original SVD3 Library |
-| :---: | :-------------------: |
-| ± μs  |         ± μs          |
+|  C API (`double`)   | Original SVD3 Library (`float`) |
+| :-----------------: | :-----------------------------: |
+| 1.12465 ± 0.0010 μs |              ± μs               |
 
 ## License
 

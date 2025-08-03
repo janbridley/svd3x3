@@ -3,8 +3,10 @@ cmake_minimum_required(VERSION 3.15...3.26)
 project(svd3x3 LANGUAGES CXX)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-if (NOT SKBUILD)
-  message(WARNING "\
+if(NOT SKBUILD)
+  message(
+    WARNING
+      "\
   This CMake file is meant to be executed using 'scikit-build'. Running
   it directly will almost certainly not produce the desired result. If
   you are a user trying to install this package, please use the command
@@ -26,8 +28,9 @@ if (NOT SKBUILD)
   after editing C++ files.")
 endif()
 
-find_package(Python 3.8
-  REQUIRED COMPONENTS Interpreter Development.Module
+find_package(
+  Python 3.8 REQUIRED
+  COMPONENTS Interpreter Development.Module
   OPTIONAL_COMPONENTS Development.SABIModule)
 find_package(nanobind CONFIG REQUIRED)
 
@@ -44,14 +47,9 @@ endif()
 # We are now ready to compile the actual extension module
 nanobind_add_module(
   # Name of the extension
-  _c
-
-  STABLE_ABI
-  NB_STATIC
-
+  _c STABLE_ABI NB_STATIC
   # Source code (export file) goes here
-  svd3x3/svd3.cpp
-)
+  svd3x3/svd3.cpp)
 set(BUILD_MODE Debug)
 set(CMAKE_CXX_FLAGS_DEBUG "-g")
 # Install directive for scikit-build-core

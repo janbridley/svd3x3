@@ -215,6 +215,8 @@ def test_svd_matches_original():
 def test_svd3_raises(bad_m):
     with pytest.raises(ValueError):
         svd3(bad_m)
+
+
 # TODO: generate real covariances, NOT random matrixes. This will be a better test of
 # numerical stability
 @pytest.mark.parametrize("a", generate_random_matrixes(1000))

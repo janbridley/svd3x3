@@ -248,12 +248,9 @@ inline void jacobiEigenanalysis(
         // on every iteration, but cycling over all 3 possible rotations
         // in fixed order (p,q) = (1,2) , (2,3), (1,3) still retains
         //  asymptotic convergence
-        jacobiConjugation(0, 1, 2, s, qV); // p,q =
-                                           // 0,1
-        jacobiConjugation(1, 2, 0, s, qV); // p,q =
-                                           // 1,2
-        jacobiConjugation(2, 0, 1, s, qV); // p,q =
-                                           // 0,2
+        jacobiConjugation(0, 1, 2, s, qV); // p,q = 0,1
+        jacobiConjugation(1, 2, 0, s, qV); // p,q = 1,2
+        jacobiConjugation(2, 0, 1, s, qV); // p,q = 0,2
     }
 }
 

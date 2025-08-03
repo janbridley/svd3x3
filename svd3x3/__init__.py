@@ -15,7 +15,7 @@ def svd(a):
         raise ValueError("Input matrix does not have the correct shape.")
     return _svd(a)
 
-def _bench(N = 1_000_000, N_REPS=100):
+def _bench(N = 500_000, N_REPS=20):
     import numpy as np
     import timeit
     from ._c import svd

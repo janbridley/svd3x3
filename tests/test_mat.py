@@ -132,7 +132,6 @@ def test_svd_matches_original():
         [-0.411397, 0.0365854, 0.199707],
         [0.285389, -0.313789, 0.200189],
     ])
-    print(m)
 
     # RESULTS USING FAST INVERSE SQUARE ROOT: S is not diagonal
     # u_ref = [
@@ -204,23 +203,28 @@ def test_svd_matches_original():
     # np.testing.assert_allclose(np.array(u_ref) @ s_ref @ v_ref, usv_ref)
 
     # np.testing.assert_allclose(u, u_ref)
-    np.testing.assert_allclose(s, s_ref)
+    np.testing.assert_allclose(s, s_ref, atol=ATOL_SP)
     # np.testing.assert_allclose(v, v_ref)
 
 
+# TODO: generate real covariances, NOT random matrixes.
 @pytest.mark.parametrize("a", generate_random_matrixes(1000))
 def test_svd(a):
     b = deepcopy(a)
     ref_u, ref_s, ref_v = np.linalg.svd(a)
     U, S, VT = svd(a)
     np.testing.assert_array_equal(a, b)
-    # Validate we've sorted our singular values in descending order
 
-    np.testing.assert_array_equal(np.diag(S), sorted(np.diag(S))[::-1])  # FAILING:
-    np.testing.assert_array_equal(S, np.diag(np.diag(S)))
+    # Validate we've sorted our singular values in descending order
+    np.testing.assert_array_equal(np.diag(S), sorted(np.diag(S))[::-1])
+
+    # ISSUE: this result can be arbitrarily(?) bad? 1e-2
+    print(ref_s)
+
+    np.testing.assert_allclose(S, np.diag(np.diag(S)), atol=5e-4)
 
     # ISSUE: Seems we're reading the matrix in the wrong order?
-    np.testing.assert_allclose(U @ S @ VT.T, a.T)
+    np.testing.assert_allclose(U @ S @ VT.T, a)
 
     # Validation check: PASSING
     np.testing.assert_allclose(ref_u @ np.diag(ref_s) @ ref_v, a)

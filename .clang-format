@@ -1,0 +1,17 @@
+BasedOnStyle: WebKit
+AlignAfterOpenBracket: DontAlign
+AlignTrailingComments: 'true'
+AllowShortFunctionsOnASingleLine: 'true'
+AllowShortIfStatementsOnASingleLine: 'true'
+AllowShortLoopsOnASingleLine: 'true'
+BreakBeforeBraces: Attach
+BinPackParameters: false
+BinPackArguments: false
+BreakBeforeBinaryOperators: None
+ColumnLimit: 88
+IndentWidth: 4
+# Language: C
+NamespaceIndentation: None
+SortIncludes: 'true'
+TabWidth: 4
+UseTab: Never

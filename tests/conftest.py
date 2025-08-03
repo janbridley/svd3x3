@@ -1,6 +1,5 @@
 import numpy as np
 from hypothesis.strategies import composite, floats
-import numpy as np
 from hypothesis.extra.numpy import arrays
 
 RNG = np.random.default_rng(seed=0)

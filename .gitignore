@@ -33,3 +33,4 @@ __pycache__/
 .ipynb_checkpoints/
 
 svd3x3/_*.c
+bench

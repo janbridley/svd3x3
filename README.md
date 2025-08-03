@@ -3,7 +3,7 @@
 This is an implementation of the method described in
 [Computing the Singular Value Decomposition of 3x3 matrices with minimal branching and elementary floating point operations](http://pages.cs.wisc.edu/~sifakis/papers/SVD_TR1690.pdf),
 based on an implementation by Eric Jang. I've updated the syntax of the library to
-reflect a more modern c++ style, and included Python bindings an unit tests.
+reflect a more modern c++ style, and included Python bindings & unit tests.
 
 ## Usage
 
@@ -71,9 +71,8 @@ below 55°C for the entire duration.
 Our implementation is both faster and more accurate than the original C source despite
 using double precision, and is significantly faster than Numpy. Note that the 
 [original source code](https://pages.cs.wisc.edu/~sifakis/project_pages/svd.html)
-was reported to run a factor of 4 faster than this *in 2011*, so there is room to
-improve. The original source is entirely written in x86 intrinsics, however, so
-work to generalize that code would be advantageous.
+was reported to run a factor of 4 faster than this (although they may be counting
+throughput via SIMD intrinsics rather than raw time per computation).
 
 ## License
 

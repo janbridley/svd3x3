@@ -10,7 +10,7 @@
 
 #define NS_TO_US 0.001
 #define N_SAMPLES 500000
-#define N_REPEATS 200
+#define N_REPEATS 1000
 
 #ifdef BENCH_ORIGINAL
 #include "extern/svd_prev/svd3.h"

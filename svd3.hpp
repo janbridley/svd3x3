@@ -57,9 +57,13 @@ inline void condSwap(bool c, double &X, double &Y) {
 
 inline void condNegSwap(bool c, double &X, double &Y) {
   // used in step 2 and 3
-  double Z = -X;
-  X = c ? Y : X;
-  Y = c ? Z : Y;
+  // double Z = -X;
+  // X = c ? Y : X;
+  // Y = c ? Z : Y;
+  if (c) {
+    std::swap(X, Y);
+    X = -X;
+  }
 }
 
 // matrix multiplication M = A * B
@@ -88,11 +92,11 @@ inline void matTmul(const double a[3][3], const double b[3][3],
   m[2][2] = a[0][2] * b[0][2] + a[1][2] * b[1][2] + a[2][2] * b[2][2];
 }
 
-inline void quatToMat3(const double *qV, double m[3][3]) {
-  double w = qV[3];
+inline void quatToMat3(const double qV[4], double m[3][3]) {
   double x = qV[0];
   double y = qV[1];
   double z = qV[2];
+  double w = qV[3];
 
   double qxx = x * x;
   double qyy = y * y;
@@ -155,7 +159,7 @@ inline void approximateGivensQuaternion(double a11, double a12, double a22,
 inline void jacobiConjugation(const int x, const int y, const int z,
                               double &s11, double &s21, double &s22,
                               double &s31, double &s32, double &s33,
-                              double *qV) {
+                              double qV[4]) {
   double ch, sh;
   approximateGivensQuaternion(s11, s21, s22, ch, sh);
 
@@ -227,7 +231,7 @@ inline double dist2(double x, double y, double z) {
  */
 inline void jacobiEigenanalysis(
     // We don't need the full matrix, but we pass it for clarity
-    double s[3][3], double *qV) {
+    double s[3][3], double qV[4]) {
   // xyzw convention
   qV[0] = 0;
   qV[1] = 0;
@@ -254,9 +258,7 @@ inline void sortSingularValues(double b[3][3], double v[3][3]) {
   double rho2 = dist2(b[0][1], b[1][1], b[2][1]);
   double rho3 = dist2(b[0][2], b[1][2], b[2][2]);
   bool c;
-
   c = rho1 < rho2;
-
   for (int i = 0; i < 3; ++i) {
     condNegSwap(c, b[i][0], b[i][1]);
     condNegSwap(c, v[i][0], v[i][1]);
@@ -283,8 +285,7 @@ inline void QRGivensQuaternion(double a1, double a2, double &ch, double &sh) {
 
   sh = rho > epsilon ? a2 : 0;
   ch = std::abs(a1) + std::fmax(rho, epsilon);
-  bool b = a1 < 0;
-  condSwap(b, sh, ch);
+  condSwap(a1 < 0, sh, ch);
   double w = rsqrt(ch * ch + sh * sh);
   ch *= w;
   sh *= w;
@@ -368,29 +369,22 @@ inline void QRDecomposition(double b[3][3], double q[3][3], double r[3][3]) {
 
 inline void svd(double a[3][3], double u[3][3], double s[3][3],
                 double v[3][3]) {
-  // normal equations matrix
   double ATA[3][3];
-
-  matTmul(a, a, ATA); // TODO: gives same result?
+  matTmul(a, a, ATA);
 
   // symmetric eigenalysis
   double qV[4];
   jacobiEigenanalysis(ATA, qV);
-  // printf("qV: [%f, %f, %f, %f]\n", qV[0], qV[1], qV[2], qV[3]); // qV matches
-  // prev printMat3(ATA); // This also matches
   quatToMat3(qV, v);
-  // printMat3(v); // v matches
 
   double b[3][3];
   matmul(a, v, b);
-
-  // printMat3(b);
 
   // sort singular values and find V
   sortSingularValues(b, v);
 
   // QR decomposition
-  QRDecomposition(b, u, s); // ISSUE: we pass in
+  QRDecomposition(b, u, s);
 }
 
 /// polar decomposition can be reconstructed trivially from SVD result

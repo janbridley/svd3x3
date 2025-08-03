@@ -42,13 +42,16 @@ svd(a)
 All execution time tests were evaluated on an M1 Pro, with CPU temperature maintained
 below 55°C for the entire duration.
 
-|       Python API       |     Numpy SVD      |
-| :--------------------: | :----------------: |
-| **2.8460 ± 0.0304 μs** | 7.6621 ± 0.0158 μs |
+|       Python API       |     Numpy SVD      | % Improvement |
+| :--------------------: | :----------------: | :-----------: |
+| **2.8460 ± 0.0304 μs** | 7.6621 ± 0.0158 μs |     62.9%     |
 
-|  C API (`double`)   | Original SVD3 Library (`float`) |
-| :-----------------: | :-----------------------------: |
-| 1.12465 ± 0.0010 μs |              ± μs               |
+| C API (`double`, `-03`) | Original SVD3 Library (`float`, `-03`) | % Improvement |
+| :---------------------: | :------------------------------------: | :-----------: |
+| **0.4725 ± 0.0025 μs**  |          0.540434 ± 0.0021 μs          |     12.6%     |
+
+Our implementation is both faster and more accurate than the original C source, and is
+significantly faster than Numpy.
 
 ## License
 

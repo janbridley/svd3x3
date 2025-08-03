@@ -6,17 +6,35 @@
 #include <mach/thread_act.h>
 #include <mach/thread_policy.h>
 #include <pthread.h>
+#include <random>
 
 #define NS_TO_US 0.001
 #define N_SAMPLES 500000
+#define N_REPEATS 200
 
-// #ifdef BENCH_ORIGINAL
-// #include "extern/svd_prev/svd3.h"
-// #else
+#ifdef BENCH_ORIGINAL
+#include "extern/svd_prev/svd3.h"
+void bench(double a11, double a12, double a13, double a21, double a22,
+           double a23, double a31, double a32, double a33) {
+  float u11, u12, u13, u21, u22, u23, u31, u32, u33;
+  float s11, s12, s13, s21, s22, s23, s31, s32, s33;
+  float v11, v12, v13, v21, v22, v23, v31, v32, v33;
+
+  svd(a11, a12, a13, a21, a22, a23, a31, a32, a33, u11, u12, u13, u21, u22, u23,
+      u31, u32, u33, s11, s12, s13, s21, s22, s23, s31, s32, s33, v11, v12, v13,
+      v21, v22, v23, v31, v32, v33);
+}
+#else
 #include "svd3.h"
 
-#include <random>
+void bench(double a11, double a12, double a13, double a21, double a22,
+           double a23, double a31, double a32, double a33) {
+  double m[3][3] = {a11, a12, a13, a21, a22, a23, a31, a32, a33};
+  double u[3][3], s[3][3], v[3][3];
+  svd(m, u, s, v);
+}
 
+#endif
 void setup(double (&samples)[N_SAMPLES][9]) {
 
   std::random_device rd;
@@ -27,15 +45,6 @@ void setup(double (&samples)[N_SAMPLES][9]) {
     for (int i = 0; i < 9; ++i)
       samples[x][i] = dist(gen);
 }
-
-void bench(double a11, double a12, double a13, double a21, double a22,
-           double a23, double a31, double a32, double a33) {
-  double m[3][3] = {a11, a12, a13, a21, a22, a23, a31, a32, a33};
-  double u[3][3], s[3][3], v[3][3];
-  svd(m, u, s, v);
-}
-
-// #endif
 
 double compute_mean(const std::vector<double> &data) {
   double sum = 0;
@@ -65,7 +74,7 @@ int main() {
   mach_timebase_info(&info);
   std::vector<double> timings;
 
-  for (int iter = 0; iter < 20; ++iter) {
+  for (int iter = 0; iter < N_REPEATS; ++iter) {
     uint64_t start = mach_absolute_time();
     for (int i = 0; i < N_SAMPLES; i++) {
       bench(samples[i][0], samples[i][1], samples[i][2], samples[i][3],

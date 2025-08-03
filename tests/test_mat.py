@@ -207,7 +207,8 @@ def test_svd_matches_original():
     # np.testing.assert_allclose(v, v_ref)
 
 
-# TODO: generate real covariances, NOT random matrixes.
+# TODO: generate real covariances, NOT random matrixes. This will be a better test of
+# numerical stability
 @pytest.mark.parametrize("a", generate_random_matrixes(1000))
 def test_svd(a):
     b = deepcopy(a)
@@ -222,13 +223,12 @@ def test_svd(a):
     print(ref_s)
 
     np.testing.assert_allclose(S, np.diag(np.diag(S)), atol=5e-4)
+    S = np.diag(np.diag(S))
 
-    # ISSUE: Seems we're reading the matrix in the wrong order?
+    # Validation checks - do we recover the input?
     np.testing.assert_allclose(U @ S @ VT.T, a)
-
-    # Validation check: PASSING
     np.testing.assert_allclose(ref_u @ np.diag(ref_s) @ ref_v, a)
 
-    # U and VT are orthogonal: PASSING
+    # U and VT are orthogonal
     np.testing.assert_allclose(U.T @ U, np.eye(3), atol=ATOL)
     np.testing.assert_allclose(VT.T @ VT, np.eye(3), atol=ATOL)

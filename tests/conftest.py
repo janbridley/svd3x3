@@ -18,7 +18,7 @@ def generate_random_matrixes(n=1000, s=(3, 3)):
 
 def generate_point_set(n=4096):
     y = RNG.uniform(-10, 10, (n, 3))
-    x = y + RNG.normal(loc=RNG.uniform(-10, 10), scale=RNG.uniform(0, 1))
+    x = y + RNG.normal(loc=RNG.uniform(-10, 10), scale=RNG.uniform(0, 5))
     return x, y
 
 

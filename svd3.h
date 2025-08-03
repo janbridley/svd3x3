@@ -22,12 +22,31 @@
 
 #include <cmath>
 #include <cstdio>
+#include <utility>
 #define _gamma 5.82842712474619010 /* 3 + sqrt(8) = 3 + 2 * sqrt(2) */
 #define _cstar 0.92387953251128676 /* cos(π/8) */
 #define _sstar 0.38268343236508977 /* sin(π/8) */
-#define EPSILON 1e-6
+// #define EPSILON 1e-6
+#define EPSILON 1e-13
 
 #include <math.h>
+
+
+inline void printMat3(double a[3][3]) {
+
+  double a11 = a[0][0];
+  double a12 = a[0][1];
+  double a13 = a[0][2];
+  double a21 = a[1][0];
+  double a22 = a[1][1];
+  double a23 = a[1][2];
+  double a31 = a[2][0];
+  double a32 = a[2][1];
+  double a33 = a[2][2];
+  printf("[[%.16f, %.16f, %.16f], \n", a11, a12, a13);
+  printf(" [%.16f, %.16f, %.16f], \n", a21, a22, a23);
+  printf(" [%.16f, %.16f, %.16f]] \n", a31, a32, a33);
+}
 
 /**
  * @brief Compute the inverse square root of a number.
@@ -251,6 +270,9 @@ inline void jacobiEigenanalysis(
 }
 
 inline void sortSingularValues(double b[3][3], double v[3][3]) {
+  // TODO: should be able to standard swap entire rows!
+  // Let's do this and add tests to this fn
+  // std::swap(b[0], v[0]);
   double rho1 = dist2(b[0][0], b[1][0], b[2][0]);
   double rho2 = dist2(b[0][1], b[1][1], b[2][1]);
   double rho3 = dist2(b[0][2], b[1][2], b[2][2]);
@@ -296,6 +318,7 @@ inline void QRGivensQuaternion(double a1, double a2, double &ch, double &sh) {
 }
 
 inline void QRDecomposition(double b[3][3], double q[3][3], double r[3][3]) {
+
   double ch1, sh1, ch2, sh2, ch3, sh3;
   double aa, bb;
 
@@ -375,21 +398,27 @@ inline void svd(double a[3][3], double u[3][3], double s[3][3],
   // normal equations matrix
   double ATA[3][3];
 
-  matTmul(a, a, ATA);
+  matTmul(a, a, ATA); // TODO: gives same result?
 
   // symmetric eigenalysis
   double qV[4];
   jacobiEigenanalysis(ATA, qV);
+  // printf("qV: [%f, %f, %f, %f]\n", qV[0], qV[1], qV[2], qV[3]); // qV matches prev
+  // printMat3(ATA); // This also matches
   quatToMat3(qV, v);
+  // printMat3(v); // v matches
 
   double b[3][3];
-  matTmul(a, v, b);
+  matmul(a, v, b);
+  
+  printMat3(b);
+
 
   // sort singular values and find V
   sortSingularValues(b, v);
 
   // QR decomposition
-  QRDecomposition(b, u, s);
+  QRDecomposition(b, u, s); // ISSUE: we pass in 
 }
 
 /// polar decomposition can be reconstructed trivially from SVD result

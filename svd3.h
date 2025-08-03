@@ -20,23 +20,25 @@
 
 #pragma once
 
-#define _gamma 5.828427124  // FOUR_GAMMA_SQUARED = sqrt(8)+3;
-#define _cstar 0.923879532  // cos(pi/8)
-#define _sstar 0.3826834323 // sin(p/8)
+#define _gamma 5.82842712474619010 /* 3 + sqrt(8) = 3 + 2 * sqrt(2) */
+#define _cstar 0.92387953251128676 /* cos(π/8) */
+#define _sstar 0.38268343236508977 /* sin(π/8) */
 #define EPSILON 1e-6
 
 #include <math.h>
 
 /**
  * @brief Compute the inverse square root of a number.
- * 
- * Although the fast inverse square root algorithm is absolutely deserving of its fame,
- * on modern architectures it simply does not make sense. Regardless of its precision
- * (which for this algorithm does not matter, see section 2.4 of the original paper),
- * fast rsqrt is never actually faster than sqrt[f|d] on modern hardware. The paper
- * [here](https://apps.dtic.mil/sti/pdfs/AD1014930.pdf), from 2016, indicates this was
- * not the case for single precision at the time, so it is possible that a performance
- * gain is still possible on some hardware. For now, we use the simple formula.
+ *
+ * Although the fast inverse square root algorithm is absolutely deserving of
+ * its fame, on modern architectures it simply does not make sense. Regardless
+ * of its precision (which for this algorithm does not matter, see section 2.4
+ * of the original paper), fast rsqrt is never actually faster than sqrt[f|d] on
+ * modern hardware. The paper
+ * [here](https://apps.dtic.mil/sti/pdfs/AD1014930.pdf), from 2016, indicates
+ * this was not the case for single precision at the time, so it is possible
+ * that a performance gain is still possible on some hardware. For now, we use
+ * the simple formula.
  */
 inline double rsqrt(double x) { return 1.0 / sqrt(x); }
 
@@ -46,7 +48,7 @@ inline double rsqrt(double x) { return 1.0 / sqrt(x); }
  * @param c[in] A boolean indicating whether the values should be swapped
  * @param X[in, out] The first value to consider swapping
  * @param Y[in, out] The second value to consider swapping
-*/
+ */
 inline void condSwap(bool c, double &X, double &Y) {
   // used in step 2
   double Z = X;
@@ -74,7 +76,8 @@ inline void matmul(const double a[3][3], const double b[3][3], double m[3][3]) {
   m[2][2] = a[2][0] * b[0][2] + a[2][1] * b[1][2] + a[2][2] * b[2][2];
 }
 // matrix multiplication M = A.T * B
-inline void matTmul(const double a[3][3], const double b[3][3], double m[3][3]) {
+inline void matTmul(const double a[3][3], const double b[3][3],
+                    double m[3][3]) {
   m[0][0] = a[0][0] * b[0][0] + a[1][0] * b[1][0] + a[2][0] * b[2][0];
   m[0][1] = a[0][0] * b[0][1] + a[1][0] * b[1][1] + a[2][0] * b[2][1];
   m[0][2] = a[0][0] * b[0][2] + a[1][0] * b[1][2] + a[2][0] * b[2][2];
@@ -115,7 +118,7 @@ inline void quatToMat3(const double *qV, double m[3][3]) {
 
 /**
  * @brief Approximate the quaternion representing a 2x2 Givens rotation
- * 
+ *
  * @param a11[in] The upper left of the Givens rotation
  * @param a12[in] The upper right of the Givens rotation
  * @param a22[in] The lower right of the Givens rotation
@@ -201,7 +204,7 @@ inline double dist2(double x, double y, double z) {
 /**
  * @brief Find the quaternion that diagonalizes a symmetric matrix
  *
- * 
+ *
  * @param s[in, out] Input symmetric 3x3 matrix.
  * @param qV[out]    The quaternion that diagonalizes the input matrix.
  */
@@ -347,7 +350,8 @@ inline void QRDecomposition(double b[3][3], double q[3][3], double r[3][3]) {
   q[2][2] = (-1 + 2 * sh22) * (-1 + 2 * sh32);
 }
 
-inline void svd(double a[3][3], double u[3][3], double s[3][3], double v[3][3]) {
+inline void svd(double a[3][3], double u[3][3], double s[3][3],
+                double v[3][3]) {
   // normal equations matrix
   double ATA[3][3];
 

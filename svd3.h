@@ -20,6 +20,8 @@
 
 #pragma once
 
+#include <cmath>
+#include <cstdio>
 #define _gamma 5.82842712474619010 /* 3 + sqrt(8) = 3 + 2 * sqrt(2) */
 #define _cstar 0.92387953251128676 /* cos(π/8) */
 #define _sstar 0.38268343236508977 /* sin(π/8) */
@@ -116,17 +118,35 @@ inline void quatToMat3(const double *qV, double m[3][3]) {
   m[2][2] = 1 - 2 * (qxx + qyy);
 }
 
+inline void approxGivensAngle(double a11, double a12, double a22, double &ch,
+                              double &sh) {
+  // if ((a22 - a11) < EPSILON) {
+  //   ch = sh = sqrt(2);
+  //   return;
+  // }
+  // double theta = std::atan(2 * a12 / (a11 - a22)) / 2;
+
+  // ch = std::cos(theta);
+  // sh = std::sin(theta);
+  double sq = (a11 - a22) * (a11 - a22);
+  bool b = (a12 * a12 < sq);
+  double omega = rsqrt(a12 * a12 + sq);
+  ch = b ? omega * a12 : 0.70710678118654752;
+  sh = b ? omega * (a11 - a22) : 0.70710678118654752;
+}
+
 /**
  * @brief Approximate the quaternion representing a 2x2 Givens rotation
  *
  * @param a11[in] The upper left of the Givens rotation
  * @param a12[in] The upper right of the Givens rotation
  * @param a22[in] The lower right of the Givens rotation
- * @param ch[out] Approximation for the cosine of the Givens angle
- * @param sh[out] Approximation for the sine of the Givens angle
+ * @param ch,sh[out] Approximations for the unnormalized Givens quaternion elements.
  */
 inline void approximateGivensQuaternion(double a11, double a12, double a22,
                                         double &ch, double &sh) {
+
+  // TODO: This seems to be wrong? Did I break something?
   ch = 2 * (a11 - a22);
   sh = a12;
   bool b = _gamma * sh * sh < ch * ch;

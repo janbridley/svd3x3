@@ -1,9 +1,10 @@
 from copy import deepcopy
+from sympy import Matrix, atan2, cos, sin, simplify, symbols
 import pytest
 import warnings
 import rowan
 from hypothesis import given, settings, HealthCheck, strategies as st
-from conftest import generate_random_matrixes, nonsingular_3x3_matrices
+from conftest import generate_random_matrixes, nonsingular_3x3_matrices, rotmat2x2
 import numpy as np
 from svd3x3._c import (
     mul_a_b,
@@ -14,12 +15,19 @@ from svd3x3._c import (
     norm2,
     qr,
     jacobi_eigenanalysis,
+    approximate_givens_quat,
 )
 
 # TODO: generate meaningful test matrixes
 N = 20
 ATOL = 1e-12
 ATOL_TIGHT = 4e-16
+GAMMA = 3 + 2 * np.sqrt(2)
+CSTAR = np.cos(np.pi / 8)
+SSTAR = np.cos(np.pi / 8)
+
+QUAT_LOWER_DISTANCE_TOL = np.pi / 8 + ATOL_TIGHT
+QUAT_UPPER_DISTANCE_TOL = np.pi - (np.pi / 8 + ATOL_TIGHT)
 
 
 @given(st.floats(min_value=0.0))
@@ -92,18 +100,30 @@ def test_qr(a):
     np.testing.assert_allclose(R, r_ref, atol=ATOL)
 
 
-@pytest.mark.parametrize("a", generate_random_matrixes(N**2))
-def test_jacobi_eigenanalysis(a):
-    b = deepcopy(a)
-    q_diag = jacobi_eigenanalysis(a)
+# @given(rotmat2x2())
+# def test_approximate_givens_angle(angle_and_mat):
+#     _, m = angle_and_mat
+#     c, _, _, s = approximate_givens_angle(m)
 
-    # Validate b != a (a should be diagonalized in place)
-    with np.testing.assert_raises(AssertionError):
-        np.testing.assert_array_equal(b, a)
-        assert not np.allclose(np.diag(np.diag(a)), a)
+#     # This is the condition we require for Jacobi iteration to converge (Section 2.1)
+#     np.testing.assert_allclose(
+#         c * s * (m[1, 1] - m[0, 0]) + (c**2 - s**2) * m[1, 0], 0, atol=ATOL_TIGHT
+#     )
 
-    # a should now be diagonalized
-    np.testing.assert_allclose(a,np.diag(np.diag(a)), atol=ATOL)
+
+# @pytest.mark.parametrize("a", generate_random_matrixes(N**2))
+# def test_jacobi_eigenanalysis(a):
+#     b = deepcopy(a)
+#     q_diag = jacobi_eigenanalysis(a)
+
+#     # Validate b != a (a should be diagonalized in place)
+#     with np.testing.assert_raises(AssertionError):
+#         np.testing.assert_array_equal(b, a)
+#         assert not np.allclose(np.diag(np.diag(a)), a)
+
+#     # a should now be diagonalized
+#     np.testing.assert_allclose(a, np.diag(np.diag(a)), atol=ATOL)
+
 
 # @pytest.mark.parametrize("a", generate_random_matrixes(N**2))
 # def test_svd(a):

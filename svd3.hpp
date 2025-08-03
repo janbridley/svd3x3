@@ -156,17 +156,8 @@ inline void approximateGivensQuaternion(
     sh = b ? ω * sh : (double)_sstar;
 }
 
-inline void jacobiConjugation(const int x,
-    const int y,
-    const int z,
-    double s[3][3],
-    // double& s11,
-    // double& s21,
-    // double& s22,
-    // double& s31,
-    // double& s32,
-    // double& s33,
-    double qV[4]) {
+inline void jacobiConjugation(
+    const int x, const int y, const int z, double s[3][3], double qV[4]) {
     double ch, sh;
     approximateGivensQuaternion(s[0][0], s[1][0], s[1][1], ch, sh);
 
@@ -243,7 +234,7 @@ inline void jacobiEigenanalysis(
     qV[1] = 0;
     qV[2] = 0;
     qV[3] = 1;
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < 4; i++) { // ISSUE: This is not enough iterations!
         // we wish to eliminate the maximum off-diagonal element
         // on every iteration, but cycling over all 3 possible rotations
         // in fixed order (p,q) = (1,2) , (2,3), (1,3) still retains

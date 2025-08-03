@@ -256,12 +256,6 @@ inline void sortSingularValues(double b[3][3], double v[3][3]) {
   bool c;
 
   c = rho1 < rho2;
-  // condNegSwap(c, b[0][0], b[0][1]);
-  // condNegSwap(c, v[0][0], v[0][1]);
-  // condNegSwap(c, b[1][0], b[1][1]);
-  // condNegSwap(c, v[1][0], v[1][1]);
-  // condNegSwap(c, b[2][0], b[2][1]);
-  // condNegSwap(c, v[2][0], v[2][1]);
 
   for (int i = 0; i < 3; ++i) {
     condNegSwap(c, b[i][0], b[i][1]);
@@ -269,31 +263,16 @@ inline void sortSingularValues(double b[3][3], double v[3][3]) {
   }
   condSwap(c, rho1, rho2);
   c = rho1 < rho3;
-  // condNegSwap(c, b[0][0], b[0][2]);
-  // condNegSwap(c, v[0][0], v[0][2]);
-  // condNegSwap(c, b[1][0], b[1][2]);
-  // condNegSwap(c, v[1][0], v[1][2]);
-  // condNegSwap(c, b[2][0], b[2][2]);
-  // condNegSwap(c, v[2][0], v[2][2]);
-  // condSwap(c, rho1, rho3);
-
   for (int i = 0; i < 3; ++i) {
     condNegSwap(c, b[i][0], b[i][2]);
     condNegSwap(c, v[i][0], v[i][2]);
   }
   condSwap(c, rho1, rho3);
   c = rho2 < rho3;
-
   for (int i = 0; i < 3; ++i) {
     condNegSwap(c, b[i][1], b[i][2]);
     condNegSwap(c, v[i][1], v[i][2]);
   }
-  // condNegSwap(c, b[0][1], b[0][2]);
-  // condNegSwap(c, v[0][1], v[0][2]);
-  // condNegSwap(c, b[1][1], b[1][2]);
-  // condNegSwap(c, v[1][1], v[1][2]);
-  // condNegSwap(c, b[2][1], b[2][2]);
-  // condNegSwap(c, v[2][1], v[2][2]);
 }
 
 inline void QRGivensQuaternion(double a1, double a2, double &ch, double &sh) {

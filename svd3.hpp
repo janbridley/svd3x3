@@ -57,9 +57,6 @@ inline void condSwap(bool c, double &X, double &Y) {
 
 inline void condNegSwap(bool c, double &X, double &Y) {
   // used in step 2 and 3
-  // double Z = -X;
-  // X = c ? Y : X;
-  // Y = c ? Z : Y;
   if (c) {
     std::swap(X, Y);
     X = -X;

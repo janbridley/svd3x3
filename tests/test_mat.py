@@ -1,10 +1,9 @@
 from copy import deepcopy
-from sympy import Matrix, atan2, cos, sin, simplify, symbols
 import pytest
 import warnings
 import rowan
-from hypothesis import given, settings, HealthCheck, strategies as st
-from conftest import generate_random_matrixes, nonsingular_3x3_matrices, rotmat2x2
+from hypothesis import given, strategies as st
+from conftest import generate_random_matrixes
 import numpy as np
 from svd3x3._c import (
     mul_a_b,
@@ -13,8 +12,6 @@ from svd3x3._c import (
     q2mat3,
     norm2,
     qr,
-    jacobi_eigenanalysis,
-    # approximate_givens_quat,
 )
 from svd3x3 import (
     svd3,

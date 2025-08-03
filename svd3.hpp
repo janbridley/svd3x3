@@ -21,15 +21,10 @@
 #pragma once
 
 #include <cmath>
-#include <cstdio>
-#include <utility>
 #define _gamma 5.82842712474619010 /* 3 + sqrt(8) = 3 + 2 * sqrt(2) */
 #define _cstar 0.92387953251128676 /* cos(π/8) */
 #define _sstar 0.38268343236508977 /* sin(π/8) */
 #define EPSILON 1e-6
-// #define EPSILON 1e-13
-
-#include <math.h>
 
 /**
  * @brief Compute the inverse square root of a number.
@@ -44,7 +39,7 @@
  * that a performance gain is still possible on some hardware. For now, we use
  * the simple formula.
  */
-inline double rsqrt(double x) { return 1.0 / sqrt(x); }
+inline double rsqrt(double x) { return 1.0 / std::sqrt(x); }
 
 /**
  * @brief Compute the inverse square root of a number.
@@ -292,7 +287,7 @@ inline void QRGivensQuaternion(double a1, double a2, double &ch, double &sh) {
   double rho = sqrt(a1 * a1 + a2 * a2);
 
   sh = rho > epsilon ? a2 : 0;
-  ch = abs(a1) + fmax(rho, epsilon);
+  ch = std::abs(a1) + std::fmax(rho, epsilon);
   bool b = a1 < 0;
   condSwap(b, sh, ch);
   double w = rsqrt(ch * ch + sh * sh);

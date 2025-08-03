@@ -26,27 +26,10 @@
 #define _gamma 5.82842712474619010 /* 3 + sqrt(8) = 3 + 2 * sqrt(2) */
 #define _cstar 0.92387953251128676 /* cos(π/8) */
 #define _sstar 0.38268343236508977 /* sin(π/8) */
-// #define EPSILON 1e-6
-#define EPSILON 1e-13
+#define EPSILON 1e-6
+// #define EPSILON 1e-13
 
 #include <math.h>
-
-
-inline void printMat3(double a[3][3]) {
-
-  double a11 = a[0][0];
-  double a12 = a[0][1];
-  double a13 = a[0][2];
-  double a21 = a[1][0];
-  double a22 = a[1][1];
-  double a23 = a[1][2];
-  double a31 = a[2][0];
-  double a32 = a[2][1];
-  double a33 = a[2][2];
-  printf("[[%.16f, %.16f, %.16f], \n", a11, a12, a13);
-  printf(" [%.16f, %.16f, %.16f], \n", a21, a22, a23);
-  printf(" [%.16f, %.16f, %.16f]] \n", a31, a32, a33);
-}
 
 /**
  * @brief Compute the inverse square root of a number.
@@ -160,12 +143,12 @@ inline void approxGivensAngle(double a11, double a12, double a22, double &ch,
  * @param a11[in] The upper left of the Givens rotation
  * @param a12[in] The upper right of the Givens rotation
  * @param a22[in] The lower right of the Givens rotation
- * @param ch,sh[out] Approximations for the unnormalized Givens quaternion elements.
+ * @param ch,sh[out] Approximations for the unnormalized Givens quaternion
+ * elements.
  */
 inline void approximateGivensQuaternion(double a11, double a12, double a22,
                                         double &ch, double &sh) {
 
-  // TODO: This seems to be wrong? Did I break something?
   ch = 2 * (a11 - a22);
   sh = a12;
   bool b = _gamma * sh * sh < ch * ch;
@@ -403,22 +386,21 @@ inline void svd(double a[3][3], double u[3][3], double s[3][3],
   // symmetric eigenalysis
   double qV[4];
   jacobiEigenanalysis(ATA, qV);
-  // printf("qV: [%f, %f, %f, %f]\n", qV[0], qV[1], qV[2], qV[3]); // qV matches prev
-  // printMat3(ATA); // This also matches
+  // printf("qV: [%f, %f, %f, %f]\n", qV[0], qV[1], qV[2], qV[3]); // qV matches
+  // prev printMat3(ATA); // This also matches
   quatToMat3(qV, v);
   // printMat3(v); // v matches
 
   double b[3][3];
   matmul(a, v, b);
-  
-  printMat3(b);
 
+  // printMat3(b);
 
   // sort singular values and find V
   sortSingularValues(b, v);
 
   // QR decomposition
-  QRDecomposition(b, u, s); // ISSUE: we pass in 
+  QRDecomposition(b, u, s); // ISSUE: we pass in
 }
 
 /// polar decomposition can be reconstructed trivially from SVD result

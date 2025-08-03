@@ -25,7 +25,7 @@ void bench(double a11, double a12, double a13, double a21, double a22,
       v21, v22, v23, v31, v32, v33);
 }
 #else
-#include "svd3.h"
+#include "svd3.hpp"
 
 void bench(double a11, double a12, double a13, double a21, double a22,
            double a23, double a31, double a32, double a33) {

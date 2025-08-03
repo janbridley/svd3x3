@@ -8,6 +8,7 @@ namespace nb = nanobind;
 
 using namespace nb::literals;
 
+using Matrix22d = nb::ndarray<double, nb::numpy, nb::shape<2, 2>>;
 using Matrix33d = nb::ndarray<double, nb::numpy, nb::shape<3, 3>>;
 using Quaternion = nb::ndarray<double, nb::numpy, nb::shape<4>>;
 
@@ -43,6 +44,15 @@ NB_MODULE(_c, m) {
         return std::make_tuple(Matrix33d(q), Matrix33d(r));
       },
       nb::rv_policy::automatic);
+  // m.def(
+  //   "approximate_givens_quat",
+  //   [](const Matrix22d a){
+  //     double ch, sh;
+  //     approximateGivensQuaternion(a(0, 0), a(0, 1), a(1, 1), ch, sh);
+  //     double q[4] = {ch, 0, 0, sh};
+  //     return Quaternion(q).cast();
+  //   }
+  // );
   m.def("jacobi_eigenanalysis", [](const Matrix33d a) {
     double q[4];
     jacobiEigenanalysis(reinterpret_cast<double(*)[3]>(a.data()), q);

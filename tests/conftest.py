@@ -23,3 +23,10 @@ def nonsingular_3x3_matrices(draw):
         matrix = draw(arrays(np.float64, (3, 3), elements=floats(-10, 10)))
         if np.linalg.matrix_rank(matrix) == 3:
             return matrix
+
+
+@composite
+def rotmat2x2(draw):
+    """NOTE: this uses the reduced range [-π/4, π/4] for compliance with the paper."""
+    theta = draw(floats(min_value=-np.pi/4, max_value=np.pi/4))
+    return (theta, np.array([[np.cos(theta), -np.sin(theta)], [np.sin(theta), np.cos(theta)]]))

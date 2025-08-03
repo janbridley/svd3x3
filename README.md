@@ -69,7 +69,11 @@ below 55°C for the entire duration.
 | **0.4725 ± 0.0025 μs**  |          0.540434 ± 0.0021 μs          |     12.6%     |
 
 Our implementation is both faster and more accurate than the original C source despite
-using double precision, and is significantly faster than Numpy.
+using double precision, and is significantly faster than Numpy. Note that the 
+[original source code](https://pages.cs.wisc.edu/~sifakis/project_pages/svd.html)
+was reported to run a factor of 4 faster than this *in 2011*, so there is room to
+improve. The original source is entirely written in x86 intrinsics, however, so
+work to generalize that code would be advantageous.
 
 ## License
 

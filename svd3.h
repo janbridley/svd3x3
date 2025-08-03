@@ -27,19 +27,32 @@
 
 #include <math.h>
 
-/* Inverse square root.
-
-Note that the fast inverse square root algorithm is no longer practical, which
-is rather a shame.
-*/
+/**
+ * @brief Compute the inverse square root of a number.
+ * 
+ * Although the fast inverse square root algorithm is absolutely deserving of its fame,
+ * on modern architectures it simply does not make sense. Regardless of its precision
+ * (which for this algorithm does not matter, see section 2.4 of the original paper),
+ * fast rsqrt is never actually faster than sqrt[f|d] on modern hardware. The paper
+ * [here](https://apps.dtic.mil/sti/pdfs/AD1014930.pdf), from 2016, indicates this was
+ * not the case for single precision at the time, so it is possible that a performance
+ * gain is still possible on some hardware. For now, we use the simple formula.
+ */
 inline double rsqrt(double x) { return 1.0 / sqrt(x); }
 
+/**
+ * @brief Compute the inverse square root of a number.
+ *
+ * @param c[in] A boolean indicating whether the values should be swapped
+ * @param X[in, out] The first value to consider swapping
+ * @param Y[in, out] The second value to consider swapping
+*/
 inline void condSwap(bool c, double &X, double &Y) {
   // used in step 2
   double Z = X;
   X = c ? Y : X;
   Y = c ? Z : Y;
-}
+} // TODO: replace with std::swap
 
 inline void condNegSwap(bool c, double &X, double &Y) {
   // used in step 2 and 3
@@ -100,18 +113,23 @@ inline void quatToMat3(const double *qV, double m[3][3]) {
   m[2][2] = 1 - 2 * (qxx + qyy);
 }
 
+/**
+ * @brief Approximate the quaternion representing a 2x2 Givens rotation
+ * 
+ * @param a11[in] The upper left of the Givens rotation
+ * @param a12[in] The upper right of the Givens rotation
+ * @param a22[in] The lower right of the Givens rotation
+ * @param ch[out] Approximation for the cosine of the Givens angle
+ * @param sh[out] Approximation for the sine of the Givens angle
+ */
 inline void approximateGivensQuaternion(double a11, double a12, double a22,
                                         double &ch, double &sh) {
-  /*
-   * Given givens angle computed by approximateGivensAngles,
-   * compute the corresponding rotation quaternion.
-   */
   ch = 2 * (a11 - a22);
   sh = a12;
   bool b = _gamma * sh * sh < ch * ch;
-  double w = rsqrt(ch * ch + sh * sh);
-  ch = b ? w * ch : (double)_cstar;
-  sh = b ? w * sh : (double)_sstar;
+  double ω = rsqrt(ch * ch + sh * sh); // Normalize the vector [c^2, s^2]
+  ch = b ? ω * ch : (double)_cstar;
+  sh = b ? ω * sh : (double)_sstar;
 }
 
 inline void jacobiConjugation(const int x, const int y, const int z,
@@ -180,14 +198,21 @@ inline double dist2(double x, double y, double z) {
   return x * x + y * y + z * z;
 }
 
-// finds transformation that diagonalizes a symmetric matrix
-inline void jacobiEigenanlysis(
+/**
+ * @brief Find the quaternion that diagonalizes a symmetric matrix
+ *
+ * 
+ * @param s[in, out] Input symmetric 3x3 matrix.
+ * @param qV[out]    The quaternion that diagonalizes the input matrix.
+ */
+inline void jacobiEigenanalysis(
     // We don't need the full matrix, but we pass it for clarity
     double s[3][3], double *qV) {
-  qV[3] = 1;
+  // xyzw convention
   qV[0] = 0;
   qV[1] = 0;
-  qV[2] = 0; // follow same indexing convention as GLM
+  qV[2] = 0;
+  qV[3] = 1;
   for (int i = 0; i < 4; i++) {
     // we wish to eliminate the maximum off-diagonal element
     // on every iteration, but cycling over all 3 possible rotations
@@ -330,7 +355,7 @@ inline void svd(double a[3][3], double u[3][3], double s[3][3], double v[3][3]) 
 
   // symmetric eigenalysis
   double qV[4];
-  jacobiEigenanlysis(ATA, qV);
+  jacobiEigenanalysis(ATA, qV);
   quatToMat3(qV, v);
 
   double b[3][3];

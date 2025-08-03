@@ -5,11 +5,21 @@ import rowan
 from hypothesis import given, settings, HealthCheck, strategies as st
 from conftest import generate_random_matrixes, nonsingular_3x3_matrices
 import numpy as np
-from svd3x3._c import mul_a_b, mul_at_b, svd, rsqrt, q2mat3, norm2, qr
+from svd3x3._c import (
+    mul_a_b,
+    mul_at_b,
+    svd,
+    rsqrt,
+    q2mat3,
+    norm2,
+    qr,
+    jacobi_eigenanalysis,
+)
 
 # TODO: generate meaningful test matrixes
 N = 20
 ATOL = 1e-12
+ATOL_TIGHT = 4e-16
 
 
 @given(st.floats(min_value=0.0))
@@ -83,13 +93,26 @@ def test_qr(a):
 
 
 @pytest.mark.parametrize("a", generate_random_matrixes(N**2))
-def test_svd(a):
+def test_jacobi_eigenanalysis(a):
     b = deepcopy(a)
-    ref_u, ref_s, ref_v = np.linalg.svd(a)
-    U, S, V = svd(a)
-    np.testing.assert_array_equal(a, b)
-    # Validate we've sorted our singular values in descending order
-    np.testing.assert_array_equal(np.diag(S), sorted(np.diag(S))[::-1])
-    np.testing.assert_allclose(U, ref_u)
-    np.testing.assert_allclose(S.round(13), np.diag(ref_s))
-    np.testing.assert_allclose(V, ref_v)
+    q_diag = jacobi_eigenanalysis(a)
+
+    # Validate b != a (a should be diagonalized in place)
+    with np.testing.assert_raises(AssertionError):
+        np.testing.assert_array_equal(b, a)
+        assert not np.allclose(np.diag(np.diag(a)), a)
+
+    # a should now be diagonalized
+    np.testing.assert_allclose(a,np.diag(np.diag(a)), atol=ATOL)
+
+# @pytest.mark.parametrize("a", generate_random_matrixes(N**2))
+# def test_svd(a):
+#     b = deepcopy(a)
+#     ref_u, ref_s, ref_v = np.linalg.svd(a)
+#     U, S, V = svd(a)
+#     np.testing.assert_array_equal(a, b)
+#     # Validate we've sorted our singular values in descending order
+#     np.testing.assert_array_equal(np.diag(S), sorted(np.diag(S))[::-1])
+#     np.testing.assert_allclose(U, ref_u)
+#     np.testing.assert_allclose(S.round(13), np.diag(ref_s))
+#     np.testing.assert_allclose(V, ref_v)

@@ -43,6 +43,11 @@ NB_MODULE(_c, m) {
         return std::make_tuple(Matrix33d(q), Matrix33d(r));
       },
       nb::rv_policy::automatic);
+  m.def("jacobi_eigenanalysis", [](const Matrix33d a) {
+    double q[4];
+    jacobiEigenanalysis(reinterpret_cast<double(*)[3]>(a.data()), q);
+    return Quaternion(q).cast();
+  });
   m.def(
       "svd",
       [](const Matrix33d a) -> std::tuple<Matrix33d, Matrix33d, Matrix33d> {

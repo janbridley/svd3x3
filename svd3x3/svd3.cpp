@@ -17,14 +17,14 @@ NB_MODULE(_c, m) {
   m.def("rsqrt", &rsqrt);
   m.def("mul_a_b", [](const Matrix33d a, const Matrix33d b) {
     double m[3][3];
-    matmul(reinterpret_cast<double(*)[3]>(a.data()),
-           reinterpret_cast<double(*)[3]>(b.data()), m);
+    matmul(reinterpret_cast<double (*)[3]>(a.data()),
+           reinterpret_cast<double (*)[3]>(b.data()), m);
     return Matrix33d(m).cast();
   });
   m.def("mul_at_b", [](const Matrix33d a, const Matrix33d b) {
     double m[3][3];
-    matTmul(reinterpret_cast<double(*)[3]>(a.data()),
-            reinterpret_cast<double(*)[3]>(b.data()), m);
+    matTmul(reinterpret_cast<double (*)[3]>(a.data()),
+            reinterpret_cast<double (*)[3]>(b.data()), m);
     return Matrix33d(m).cast();
   });
   m.def("q2mat3", [](const Quaternion q) {
@@ -40,7 +40,7 @@ NB_MODULE(_c, m) {
       [](const Matrix33d a) -> std::tuple<Matrix33d, Matrix33d> {
         double q[3][3];
         double r[3][3];
-        QRDecomposition(reinterpret_cast<double(*)[3]>(a.data()), q, r);
+        QRDecomposition(reinterpret_cast<double (*)[3]>(a.data()), q, r);
         return std::make_tuple(Matrix33d(q), Matrix33d(r));
       },
       nb::rv_policy::automatic);
@@ -55,7 +55,7 @@ NB_MODULE(_c, m) {
   // );
   m.def("jacobi_eigenanalysis", [](const Matrix33d a) {
     double q[4];
-    jacobiEigenanalysis(reinterpret_cast<double(*)[3]>(a.data()), q);
+    jacobiEigenanalysis(reinterpret_cast<double (*)[3]>(a.data()), q);
     return Quaternion(q).cast();
   });
   m.def(
@@ -65,7 +65,7 @@ NB_MODULE(_c, m) {
         double u[3][3] = {-999, -999, -999, -999, -999, -999, -999, -999, -999};
         double s[3][3] = {-999, -999, -999, -999, -999, -999, -999, -999, -999};
         double v[3][3] = {-999, -999, -999, -999, -999, -999, -999, -999, -999};
-        svd(reinterpret_cast<double(*)[3]>(a.data()), u, s, v);
+        svd(reinterpret_cast<double (*)[3]>(a.data()), u, s, v);
         return std::make_tuple(Matrix33d(u), Matrix33d(s), Matrix33d(v));
       },
       nb::rv_policy::automatic);

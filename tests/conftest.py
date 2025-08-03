@@ -28,5 +28,8 @@ def nonsingular_3x3_matrices(draw):
 @composite
 def rotmat2x2(draw):
     """NOTE: this uses the reduced range [-π/4, π/4] for compliance with the paper."""
-    theta = draw(floats(min_value=-np.pi/4, max_value=np.pi/4))
-    return (theta, np.array([[np.cos(theta), -np.sin(theta)], [np.sin(theta), np.cos(theta)]]))
+    theta = draw(floats(min_value=-np.pi / 4, max_value=np.pi / 4))
+    return (
+        theta,
+        np.array([[np.cos(theta), -np.sin(theta)], [np.sin(theta), np.cos(theta)]]),
+    )

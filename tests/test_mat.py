@@ -15,7 +15,7 @@ from svd3x3._c import (
     norm2,
     qr,
     jacobi_eigenanalysis,
-    approximate_givens_quat,
+    # approximate_givens_quat,
 )
 
 # TODO: generate meaningful test matrixes
@@ -125,14 +125,14 @@ def test_qr(a):
 #     np.testing.assert_allclose(a, np.diag(np.diag(a)), atol=ATOL)
 
 
-# @pytest.mark.parametrize("a", generate_random_matrixes(N**2))
-# def test_svd(a):
-#     b = deepcopy(a)
-#     ref_u, ref_s, ref_v = np.linalg.svd(a)
-#     U, S, V = svd(a)
-#     np.testing.assert_array_equal(a, b)
-#     # Validate we've sorted our singular values in descending order
-#     np.testing.assert_array_equal(np.diag(S), sorted(np.diag(S))[::-1])
-#     np.testing.assert_allclose(U, ref_u)
-#     np.testing.assert_allclose(S.round(13), np.diag(ref_s))
-#     np.testing.assert_allclose(V, ref_v)
+@pytest.mark.parametrize("a", generate_random_matrixes(N**2))
+def test_svd(a):
+    b = deepcopy(a)
+    ref_u, ref_s, ref_v = np.linalg.svd(a)
+    U, S, V = svd(a)
+    np.testing.assert_array_equal(a, b)
+    # Validate we've sorted our singular values in descending order
+    np.testing.assert_array_equal(np.diag(S), sorted(np.diag(S))[::-1])
+    np.testing.assert_allclose(U, ref_u)
+    np.testing.assert_allclose(S.round(13), np.diag(ref_s))
+    np.testing.assert_allclose(V, ref_v)

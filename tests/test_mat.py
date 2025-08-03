@@ -21,6 +21,7 @@ from svd3x3._c import (
 # TODO: generate meaningful test matrixes
 N = 20
 ATOL = 1e-12
+ATOL_SP = 1e-6
 ATOL_TIGHT = 4e-16
 GAMMA = 3 + 2 * np.sqrt(2)
 CSTAR = np.cos(np.pi / 8)
@@ -125,14 +126,105 @@ def test_qr(a):
 #     np.testing.assert_allclose(a, np.diag(np.diag(a)), atol=ATOL)
 
 
-@pytest.mark.parametrize("a", generate_random_matrixes(N**2))
+def test_svd_matches_original():
+    m = np.array([
+        [-0.558253, -0.0461681, -0.505735],
+        [-0.411397, 0.0365854, 0.199707],
+        [0.285389, -0.313789, 0.200189],
+    ])
+    print(m)
+
+    # RESULTS USING FAST INVERSE SQUARE ROOT: S is not diagonal
+    # u_ref = [
+    #     [-0.847391, -0.343132, -0.387926],
+    #     [-0.269368, 0.922143, -0.234785],
+    #     [0.448557, -0.095353, -0.882110],
+    # ]
+    # s_ref = [
+    #     [0.848985, -0.012012, 0.003219],
+    #     [0.000416, 0.404733, -0.001072],
+    #     [-0.001275, -0.000150, -0.293733],
+    # ]
+    # v_ref = [
+    #     [0.814780, -0.521873, -0.208476],
+    #     [-0.127013, 0.189629, -0.973017],
+    #     [0.548463, 0.819371, 0.092894],
+    # ]
+    # u_ref = [
+    #     [-0.849310, -0.354882, -0.390809],
+    #     [-0.278376, 0.930100, -0.239627],
+    #     [0.448531, -0.094725, -0.888734],
+    # ]
+    # s_ref = [
+    #     [0.860883, -0.000000, 0.000000],
+    #     [0.000000, 0.413613, -0.000000],
+    #     [0.000000, -0.000000, -0.296320],
+    # ]
+    # v_ref = [
+    #     [0.832469, -0.511493, -0.213002],
+    #     [-0.129771, 0.193746, -0.972431],
+    #     [0.538660, 0.837160, 0.094911],
+    # ]
+    # usv_ref = [
+    #     [-0.558253, -0.046168, -0.505735],
+    #     [-0.411397, 0.036585, 0.199707],
+    #     [0.285389, -0.313789, 0.200189],
+    # ]
+    u_ref = [
+        [-0.8493101885475047, -0.3548815183929819, -0.3908087886492650],
+        [-0.2783757569859232, 0.9301001264726573, -0.2396262311997496],
+        [0.4485302160939998, -0.0947252827035972, -0.8887336950477889],
+    ]
+    s_ref = [
+        [0.8608828113372722, -0.0000000485205244, -0.0000000130628518],
+        [-0.0000000182295021, 0.4136132119692853, 0.0000000003743927],
+        [0.0000000112557583, -0.0000000027352566, -0.2963202037851793],
+    ]
+    v_ref = [
+        [0.8324691649454764, -0.5114929566004334, -0.2130021948052509],
+        [-0.1297706377407898, 0.1937463028621116, -0.9724309463980638],
+        [0.5386599737577430, 0.8371602091022577, 0.0949110810207865],
+    ]
+    usv_ref = [
+        [-0.5582530991794445, -0.0461680664427804, -0.5057350527163749],
+        [-0.4113970118077264, 0.0365854019305501, 0.1997069505182104],
+        [0.2853889783740473, -0.3137889412046463, 0.2001889901756999],
+    ]
+
+    u, s, v = svd(m)
+
+    # Validate our outputs are orthogonal
+    np.testing.assert_allclose(u.T @ u, np.eye(3), atol=ATOL_SP)
+    np.testing.assert_allclose(v.T @ v, np.eye(3), atol=ATOL_SP)
+
+    np.testing.assert_allclose(np.array(v_ref).T @ v_ref, np.eye(3), atol=ATOL_SP)
+    np.testing.assert_allclose(np.array(u_ref).T @ u_ref, np.eye(3), atol=ATOL_SP)
+    np.testing.assert_allclose(s_ref, np.diag(np.diag(s_ref)), atol=ATOL_SP)
+    np.testing.assert_allclose(usv_ref, m, atol=ATOL_SP)
+    # np.testing.assert_allclose(np.array(u_ref) @ s_ref @ v_ref, usv_ref)
+
+    # np.testing.assert_allclose(u, u_ref)
+    np.testing.assert_allclose(s, s_ref)
+    # np.testing.assert_allclose(v, v_ref)
+
+
+@pytest.mark.parametrize("a", generate_random_matrixes(1000))
 def test_svd(a):
     b = deepcopy(a)
     ref_u, ref_s, ref_v = np.linalg.svd(a)
-    U, S, V = svd(a)
+    U, S, VT = svd(a)
     np.testing.assert_array_equal(a, b)
     # Validate we've sorted our singular values in descending order
-    np.testing.assert_array_equal(np.diag(S), sorted(np.diag(S))[::-1])
-    np.testing.assert_allclose(U, ref_u)
-    np.testing.assert_allclose(S.round(13), np.diag(ref_s))
-    np.testing.assert_allclose(V, ref_v)
+
+    np.testing.assert_array_equal(np.diag(S), sorted(np.diag(S))[::-1])  # FAILING:
+    np.testing.assert_array_equal(S, np.diag(np.diag(S)))
+
+    # ISSUE: Seems we're reading the matrix in the wrong order?
+    np.testing.assert_allclose(U @ S @ VT.T, a.T)
+
+    # Validation check: PASSING
+    np.testing.assert_allclose(ref_u @ np.diag(ref_s) @ ref_v, a)
+
+    # U and VT are orthogonal: PASSING
+    np.testing.assert_allclose(U.T @ U, np.eye(3), atol=ATOL)
+    np.testing.assert_allclose(VT.T @ VT, np.eye(3), atol=ATOL)

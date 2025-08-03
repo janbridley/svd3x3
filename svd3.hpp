@@ -21,6 +21,7 @@
 #pragma once
 
 #include <cmath>
+#include <utility>
 #define _gamma 5.82842712474619010 /* 3 + sqrt(8) = 3 + 2 * sqrt(2) */
 #define _cstar 0.92387953251128676 /* cos(π/8) */
 #define _sstar 0.38268343236508977 /* sin(π/8) */
@@ -50,10 +51,9 @@ inline double rsqrt(double x) { return 1.0 / std::sqrt(x); }
  */
 inline void condSwap(bool c, double &X, double &Y) {
   // used in step 2
-  double Z = X;
-  X = c ? Y : X;
-  Y = c ? Z : Y;
-} // TODO: replace with std::swap
+  if (c)
+    std::swap(X, Y);
+}
 
 inline void condNegSwap(bool c, double &X, double &Y) {
   // used in step 2 and 3
@@ -248,36 +248,52 @@ inline void jacobiEigenanalysis(
 }
 
 inline void sortSingularValues(double b[3][3], double v[3][3]) {
-  // TODO: should be able to standard swap entire rows!
+  // TODO: should be able to standard swap entire rows/cols?
   // Let's do this and add tests to this fn
-  // std::swap(b[0], v[0]);
   double rho1 = dist2(b[0][0], b[1][0], b[2][0]);
   double rho2 = dist2(b[0][1], b[1][1], b[2][1]);
   double rho3 = dist2(b[0][2], b[1][2], b[2][2]);
   bool c;
+
   c = rho1 < rho2;
-  condNegSwap(c, b[0][0], b[0][1]);
-  condNegSwap(c, v[0][0], v[0][1]);
-  condNegSwap(c, b[1][0], b[1][1]);
-  condNegSwap(c, v[1][0], v[1][1]);
-  condNegSwap(c, b[2][0], b[2][1]);
-  condNegSwap(c, v[2][0], v[2][1]);
+  // condNegSwap(c, b[0][0], b[0][1]);
+  // condNegSwap(c, v[0][0], v[0][1]);
+  // condNegSwap(c, b[1][0], b[1][1]);
+  // condNegSwap(c, v[1][0], v[1][1]);
+  // condNegSwap(c, b[2][0], b[2][1]);
+  // condNegSwap(c, v[2][0], v[2][1]);
+
+  for (int i = 0; i < 3; ++i) {
+    condNegSwap(c, b[i][0], b[i][1]);
+    condNegSwap(c, v[i][0], v[i][1]);
+  }
   condSwap(c, rho1, rho2);
   c = rho1 < rho3;
-  condNegSwap(c, b[0][0], b[0][2]);
-  condNegSwap(c, v[0][0], v[0][2]);
-  condNegSwap(c, b[1][0], b[1][2]);
-  condNegSwap(c, v[1][0], v[1][2]);
-  condNegSwap(c, b[2][0], b[2][2]);
-  condNegSwap(c, v[2][0], v[2][2]);
+  // condNegSwap(c, b[0][0], b[0][2]);
+  // condNegSwap(c, v[0][0], v[0][2]);
+  // condNegSwap(c, b[1][0], b[1][2]);
+  // condNegSwap(c, v[1][0], v[1][2]);
+  // condNegSwap(c, b[2][0], b[2][2]);
+  // condNegSwap(c, v[2][0], v[2][2]);
+  // condSwap(c, rho1, rho3);
+
+  for (int i = 0; i < 3; ++i) {
+    condNegSwap(c, b[i][0], b[i][2]);
+    condNegSwap(c, v[i][0], v[i][2]);
+  }
   condSwap(c, rho1, rho3);
   c = rho2 < rho3;
-  condNegSwap(c, b[0][1], b[0][2]);
-  condNegSwap(c, v[0][1], v[0][2]);
-  condNegSwap(c, b[1][1], b[1][2]);
-  condNegSwap(c, v[1][1], v[1][2]);
-  condNegSwap(c, b[2][1], b[2][2]);
-  condNegSwap(c, v[2][1], v[2][2]);
+
+  for (int i = 0; i < 3; ++i) {
+    condNegSwap(c, b[i][1], b[i][2]);
+    condNegSwap(c, v[i][1], v[i][2]);
+  }
+  // condNegSwap(c, b[0][1], b[0][2]);
+  // condNegSwap(c, v[0][1], v[0][2]);
+  // condNegSwap(c, b[1][1], b[1][2]);
+  // condNegSwap(c, v[1][1], v[1][2]);
+  // condNegSwap(c, b[2][1], b[2][2]);
+  // condNegSwap(c, v[2][1], v[2][2]);
 }
 
 inline void QRGivensQuaternion(double a1, double a2, double &ch, double &sh) {
